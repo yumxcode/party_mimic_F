@@ -71,6 +71,25 @@ def run(cmd, cwd=None, env=None, check=True, tail=None):
     return p
 
 
+def disable_mjlab_cuda_graph(pm: Path) -> None:
+    """The 4090D hosts run a CUDA driver that warp reports as >= 12.4 but that rejects conditional
+    graph nodes ("Conditional graph nodes require CUDA driver 12.4+", raised from mjlab's
+    create_graph -> mjwarp.step -> wp.capture_while). Make mjlab's own driver check fail so no graph
+    is captured: identical physics, no capture."""
+    hits = list(pm.glob(".venv/lib/python*/site-packages/mjlab/sim/sim.py"))
+    if not hits:
+        print("[boot] mjlab sim.py not found; skipping the cuda-graph patch", flush=True)
+        return
+    for path in hits:
+        s = path.read_text()
+        if "_GRAPH_CAPTURE_MIN_DRIVER = (99, 0)" in s:
+            print(f"[boot] cuda-graph patch already applied: {path}", flush=True)
+            continue
+        assert "_GRAPH_CAPTURE_MIN_DRIVER = (12, 4)" in s, path
+        path.write_text(s.replace("_GRAPH_CAPTURE_MIN_DRIVER = (12, 4)", "_GRAPH_CAPTURE_MIN_DRIVER = (99, 0)"))
+        print(f"[boot] patched {path}: CUDA graph capture disabled (driver check)", flush=True)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="f1_dance_s0")
@@ -99,12 +118,14 @@ def main() -> None:
         shutil.copytree(src, dst)
         print(f"[boot] copied {rel}", flush=True)
 
-    # 3. patch
+    # 3. patch PartyMimic (feet bodies, cuda-graph switch)
     run([sys.executable, str(HERE / "tools/patch_partymimic.py"), str(pm)], cwd=WS)
+    run(["nvidia-smi", "--query-gpu=name,driver_version", "--format=csv"], cwd=WS, check=False, tail=5)
 
     # 4. environment
     if not args.skip_sync:
         run(["uv", "sync", "--frozen"], cwd=pm, tail=40)
+    disable_mjlab_cuda_graph(pm)
 
     # 5. train
     extra = args.extra.split()

@@ -44,5 +44,44 @@ FEET = [robot.tracked_bodies.index(b) for b in _FEET] if all(b in robot.tracked_
 FEET = [robot.tracked_bodies.index(b) for b in _FEET] if all(b in robot.tracked_bodies for b in _FEET) else []''')
 
 
+def patch_env_cuda_graph(repo: Path) -> None:
+    """The gradmotion 4090D hosts run a CUDA driver < 12.4, so MuJoCo-Warp's CUDA-graph capture with
+    conditional nodes raises "Conditional graph nodes require CUDA driver 12.4+". Turn the graph capture
+    off in make_sim (same physics, just no capture)."""
+    path = repo / "src" / "partymimic" / "env.py"
+    s = path.read_text()
+    if "use_cuda_graph" in s and "_F1_NO_CUDA_GRAPH" in s:
+        print("[patch] already applied: env.py cuda graph")
+        return
+    old = """def make_sim(robot: RobotSpec) -> SimulationCfg:
+    return SimulationCfg("""
+    new = """def make_sim(robot: RobotSpec) -> SimulationCfg:  # _F1_NO_CUDA_GRAPH
+    import dataclasses as _dc
+    cfg = SimulationCfg("""
+    assert old in s, "make_sim anchor not found"
+    s = s.replace(old, new, 1)
+    # close the call and disable the graph capture
+    old2 = """            ccd_iterations=35,
+        ),
+    )"""
+    new2 = """            ccd_iterations=35,
+        ),
+    )
+    fields = getattr(cfg, "__dataclass_fields__", {}) or {}
+    print("[f1] SimulationCfg fields:", sorted(fields), flush=True)
+    for name in ("use_cuda_graph", "cuda_graph", "capture_cuda_graph", "graph"):
+        if name in fields:
+            cfg = _dc.replace(cfg, **{name: False})
+            print(f"[f1] disabled SimulationCfg.{name}", flush=True)
+            break
+    return cfg"""
+    assert old2 in s, "SimulationCfg tail anchor not found"
+    s = s.replace(old2, new2, 1)
+    path.write_text(s)
+    print("[patch] ok: env.py cuda graph")
+
+
 if __name__ == "__main__":
-    main(Path(sys.argv[1]).resolve())
+    repo = Path(sys.argv[1]).resolve()
+    main(repo)
+    patch_env_cuda_graph(repo)
