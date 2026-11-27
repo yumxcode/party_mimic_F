@@ -1,0 +1,36 @@
+[
+ {
+  "frames_out": 249,
+  "duration_s": 4.966666666666667,
+  "lift": {
+   "frames_penetrating": 18,
+   "max_penetration_m": -0.01757955448395955,
+   "max_lift_m": 0.004579554483959603,
+   "after_min_m": -0.013000000000000051
+  },
+  "sole_z_after_mean": 0.5852338671684265,
+  "name": "dance2_subject3_300_450",
+  "start": 300,
+  "end": 450,
+  "source": "dance2_subject3",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   100.0
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)",
+  "heldout": true
+ }
+]

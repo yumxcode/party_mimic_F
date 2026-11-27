@@ -3,22 +3,18 @@
   "frames_out": 750,
   "duration_s": 15.0,
   "lift": {
-   "frames_penetrating": 6,
-   "max_penetration_m": -0.019500898044101336,
-   "max_lift_m": 0.006500898044101426,
-   "after_min_m": -0.01300000000000001
+   "frames_penetrating": 2,
+   "max_penetration_m": -0.019500898044101322,
+   "max_lift_m": 0.006500898044101331,
+   "after_min_m": -0.012999999999999954
   },
-  "sole_z_after_mean": 0.5884198546409607,
+  "sole_z_after_mean": 0.5884007811546326,
   "name": "dance1_subject3_255_706",
-  "csv": "work/retarget_csv/dance1_subject3_f1.csv",
+  "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
   "start": 255,
   "end": 706,
   "source": "dance1_subject3",
-  "gates": {
-   "flat_l": 97,
-   "flat_r": 94,
-   "flat_min": 97
-  },
+  "gates": null,
   "tier": "A",
   "gate": {
    "ground": true,
@@ -28,331 +24,32 @@
    "root_height": true,
    "continuity": true,
    "foot_flatness": "True",
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   97.16981132075472,
-   93.73333333333333
-  ]
- },
- {
-  "frames_out": 149,
-  "duration_s": 2.966666666666667,
-  "lift": {
-   "frames_penetrating": 87,
-   "max_penetration_m": -0.04264636558264695,
-   "max_lift_m": 0.029802295996822957,
-   "after_min_m": -0.01300000000000003
-  },
-  "sole_z_after_mean": 0.5253477096557617,
-  "name": "dance1_subject3_720_810",
-  "csv": "work/retarget_csv/dance1_subject3_f1.csv",
-  "start": 720,
-  "end": 810,
-  "source": "dance1_subject3",
-  "gates": {
-   "flat_l": 82.22222222222221,
-   "flat_r": 93.33333333333333,
-   "flat_min": 82.22222222222221
-  },
-  "tier": "B",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": false,
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   81.20805369127517,
-   93.15068493150685
-  ]
- },
- {
-  "frames_out": 149,
-  "duration_s": 2.966666666666667,
-  "lift": {
-   "frames_penetrating": 70,
-   "max_penetration_m": -0.04332889916472454,
-   "max_lift_m": 0.0303288991647246,
-   "after_min_m": -0.013000000000000058
-  },
-  "sole_z_after_mean": 0.5364130735397339,
-  "name": "dance1_subject3_3465_3555",
-  "csv": "work/retarget_csv/dance1_subject3_f1.csv",
-  "start": 3465,
-  "end": 3555,
-  "source": "dance1_subject3",
-  "gates": {
-   "flat_l": 87.5,
-   "flat_r": 85.54216867469879,
-   "flat_min": 85.54216867469879
-  },
-  "tier": "B",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": false,
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   88.35616438356165,
-   85.60606060606061
-  ]
- },
- {
-  "frames_out": 737,
-  "duration_s": 14.733333333333333,
-  "lift": {
-   "frames_penetrating": 34,
-   "max_penetration_m": -0.019025626085863043,
-   "max_lift_m": 0.00602562608586304,
-   "after_min_m": -0.013000000000000051
-  },
-  "sole_z_after_mean": 0.6019745469093323,
-  "name": "dance2_subject1_352_795",
-  "csv": "work/retarget_csv/dance2_subject1_f1.csv",
-  "start": 352,
-  "end": 795,
-  "source": "dance2_subject1",
-  "gates": {
-   "flat_l": 90,
-   "flat_r": 93,
-   "flat_min": 90
-  },
-  "tier": "A",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": "True",
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   90.24725274725274,
-   93.27846364883402
-  ]
- },
- {
-  "frames_out": 249,
-  "duration_s": 4.966666666666667,
-  "lift": {
-   "frames_penetrating": 81,
-   "max_penetration_m": -0.02338961135918785,
-   "max_lift_m": 0.010389611359187704,
-   "after_min_m": -0.013000000000000051
-  },
-  "sole_z_after_mean": 0.5606471300125122,
-  "name": "dance2_subject3_525_675",
-  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
-  "start": 525,
-  "end": 675,
-  "source": "dance2_subject3",
-  "gates": {
-   "flat_l": 80.66666666666666,
-   "flat_r": 87.33333333333333,
-   "flat_min": 80.66666666666666
-  },
-  "tier": "B",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": false,
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   81.52610441767068,
-   87.95180722891565
-  ]
- },
- {
-  "frames_out": 249,
-  "duration_s": 4.966666666666667,
-  "lift": {
-   "frames_penetrating": 13,
-   "max_penetration_m": -0.015887119508793415,
-   "max_lift_m": 0.002923276412538152,
-   "after_min_m": -0.013000000000000024
-  },
-  "sole_z_after_mean": 0.5792103409767151,
-  "name": "dance2_subject3_1050_1200",
-  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
-  "start": 1050,
-  "end": 1200,
-  "source": "dance2_subject3",
-  "gates": {
-   "flat_l": 87.33333333333333,
-   "flat_r": 89.33333333333333,
-   "flat_min": 87.33333333333333
-  },
-  "tier": "B",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": false,
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   87.55020080321285,
-   88.75502008032129
-  ]
- },
- {
-  "frames_out": 249,
-  "duration_s": 4.966666666666667,
-  "lift": {
-   "frames_penetrating": 26,
-   "max_penetration_m": -0.018809628857589446,
-   "max_lift_m": 0.0058096288575895105,
-   "after_min_m": -0.013000000000000045
-  },
-  "sole_z_after_mean": 0.5727800130844116,
-  "name": "dance2_subject3_2325_2475",
-  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
-  "start": 2325,
-  "end": 2475,
-  "source": "dance2_subject3",
-  "gates": {
-   "flat_l": 94.36619718309859,
-   "flat_r": 80.0,
-   "flat_min": 80.0
-  },
-  "tier": "B",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": false,
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   94.44444444444444,
-   79.51807228915662
-  ]
- },
- {
-  "frames_out": 249,
-  "duration_s": 4.966666666666667,
-  "lift": {
-   "frames_penetrating": 82,
-   "max_penetration_m": -0.03317436681405443,
-   "max_lift_m": 0.020174366814054462,
-   "after_min_m": -0.013000000000000065
-  },
-  "sole_z_after_mean": 0.5814745426177979,
-  "name": "dance2_subject3_3225_3375",
-  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
-  "start": 3225,
-  "end": 3375,
-  "source": "dance2_subject3",
-  "gates": {
-   "flat_l": 92.74193548387096,
-   "flat_r": 85.71428571428571,
-   "flat_min": 85.71428571428571
-  },
-  "tier": "B",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": false,
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   94.76190476190476,
-   86.88524590163934
-  ]
- },
- {
-  "frames_out": 249,
-  "duration_s": 4.966666666666667,
-  "lift": {
-   "frames_penetrating": 155,
-   "max_penetration_m": -0.058250620522043085,
-   "max_lift_m": 0.04525062052204301,
-   "after_min_m": -0.013000000000000045
-  },
-  "sole_z_after_mean": 0.536185622215271,
-  "name": "dance2_subject3_4875_5025",
-  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
-  "start": 4875,
-  "end": 5025,
-  "source": "dance2_subject3",
-  "gates": {
-   "flat_l": 97.82608695652173,
-   "flat_r": 84.93150684931507,
-   "flat_min": 84.93150684931507
-  },
-  "tier": "B",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": false,
    "arm_quality": true,
    "stance_openness": true
   },
   "flat_pct": [
    100.0,
-   83.18181818181817
-  ]
+   100.0
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
  },
  {
-  "frames_out": 249,
-  "duration_s": 4.966666666666667,
+  "frames_out": 737,
+  "duration_s": 14.733333333333333,
   "lift": {
-   "frames_penetrating": 10,
-   "max_penetration_m": -0.02349668923968709,
-   "max_lift_m": 0.010618048854715255,
-   "after_min_m": -0.012999999999999975
+   "frames_penetrating": 13,
+   "max_penetration_m": -0.018682573475001255,
+   "max_lift_m": 0.00576510392843292,
+   "after_min_m": -0.013000000000000038
   },
-  "sole_z_after_mean": 0.5938445329666138,
-  "name": "dance2_subject3_5400_5550",
-  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
-  "start": 5400,
-  "end": 5550,
-  "source": "dance2_subject3",
-  "gates": {
-   "flat_l": 81.69014084507043,
-   "flat_r": 81.3953488372093,
-   "flat_min": 81.3953488372093
-  },
-  "tier": "B",
+  "sole_z_after_mean": 0.6017955541610718,
+  "name": "dance2_subject1_352_795",
+  "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+  "start": 352,
+  "end": 795,
+  "source": "dance2_subject1",
+  "gates": null,
+  "tier": "A",
   "gate": {
    "ground": true,
    "self_penetration": true,
@@ -360,73 +57,203 @@
    "joint_velocities": true,
    "root_height": true,
    "continuity": true,
-   "foot_flatness": false,
+   "foot_flatness": "True",
    "arm_quality": true,
    "stance_openness": true
   },
   "flat_pct": [
-   82.5531914893617,
-   76.74418604651163
-  ]
+   98.30028328611898,
+   99.43977591036415
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 12,
+   "max_penetration_m": -0.017751007715728795,
+   "max_lift_m": 0.00475100771572876,
+   "after_min_m": -0.01300000000000001
+  },
+  "sole_z_after_mean": 0.576609194278717,
+  "name": "dance2_subject4_2835_2925",
+  "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+  "start": 2835,
+  "end": 2925,
+  "source": "dance2_subject4",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   100.0
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 499,
+  "duration_s": 9.966666666666667,
+  "lift": {
+   "frames_penetrating": 12,
+   "max_penetration_m": -0.014137708975925678,
+   "max_lift_m": 0.0011377089759255492,
+   "after_min_m": -0.013000000000000051
+  },
+  "sole_z_after_mean": 0.5711120963096619,
+  "name": "dance2_subject3_450_750",
+  "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+  "start": 450,
+  "end": 750,
+  "source": "dance2_subject3",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   100.0
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 499,
+  "duration_s": 9.966666666666667,
+  "lift": {
+   "frames_penetrating": 31,
+   "max_penetration_m": -0.014495507354081795,
+   "max_lift_m": 0.0015343883012356903,
+   "after_min_m": -0.013000000000000038
+  },
+  "sole_z_after_mean": 0.5741885304450989,
+  "name": "dance2_subject3_900_1200",
+  "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+  "start": 900,
+  "end": 1200,
+  "source": "dance2_subject3",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   100.0
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 249,
+  "duration_s": 4.966666666666667,
+  "lift": {
+   "frames_penetrating": 7,
+   "max_penetration_m": -0.014406831070452887,
+   "max_lift_m": 0.0014068310704528143,
+   "after_min_m": -0.013000000000000003
+  },
+  "sole_z_after_mean": 0.5936993956565857,
+  "name": "dance2_subject3_5400_5550",
+  "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+  "start": 5400,
+  "end": 5550,
+  "source": "dance2_subject3",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   100.0
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 249,
+  "duration_s": 4.966666666666667,
+  "lift": {
+   "frames_penetrating": 0,
+   "max_penetration_m": -0.009754007213130583,
+   "max_lift_m": 0.0,
+   "after_min_m": -0.009754007213130583
+  },
+  "sole_z_after_mean": 0.6042221188545227,
+  "name": "dance2_subject4_3450_3600",
+  "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+  "start": 3450,
+  "end": 3600,
+  "source": "dance2_subject4",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   97.05882352941177,
+   95.91836734693877
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
  },
  {
   "frames_out": 249,
   "duration_s": 4.966666666666667,
   "lift": {
    "frames_penetrating": 9,
-   "max_penetration_m": -0.0201513773487252,
-   "max_lift_m": 0.007151377348725,
-   "after_min_m": -0.013000000000000024
-  },
-  "sole_z_after_mean": 0.5803294777870178,
-  "name": "dance2_subject3_5550_5700",
-  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
-  "start": 5550,
-  "end": 5700,
-  "source": "dance2_subject3",
-  "gates": {
-   "flat_l": 100.0,
-   "flat_r": 85.71428571428571,
-   "flat_min": 85.71428571428571
-  },
-  "tier": "B",
-  "gate": {
-   "ground": true,
-   "self_penetration": true,
-   "joint_limits": true,
-   "joint_velocities": true,
-   "root_height": true,
-   "continuity": true,
-   "foot_flatness": false,
-   "arm_quality": true,
-   "stance_openness": true
-  },
-  "flat_pct": [
-   99.59839357429718,
-   86.66666666666667
-  ]
- },
- {
-  "frames_out": 149,
-  "duration_s": 2.966666666666667,
-  "lift": {
-   "frames_penetrating": 46,
-   "max_penetration_m": -0.02807409141286689,
-   "max_lift_m": 0.015074091412866824,
+   "max_penetration_m": -0.027631442557781744,
+   "max_lift_m": 0.014631442557781657,
    "after_min_m": -0.013000000000000038
   },
-  "sole_z_after_mean": 0.5637184381484985,
-  "name": "dance2_subject4_2745_2835",
-  "csv": "work/retarget_csv/dance2_subject4_f1.csv",
-  "start": 2745,
-  "end": 2835,
+  "sole_z_after_mean": 0.600893497467041,
+  "name": "dance2_subject4_6300_6450",
+  "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+  "start": 6300,
+  "end": 6450,
   "source": "dance2_subject4",
-  "gates": {
-   "flat_l": 100.0,
-   "flat_r": 86.51685393258427,
-   "flat_min": 86.51685393258427
-  },
-  "tier": "B",
+  "gates": null,
+  "tier": "A",
   "gate": {
    "ground": true,
    "self_penetration": true,
@@ -434,35 +261,32 @@
    "joint_velocities": true,
    "root_height": true,
    "continuity": true,
-   "foot_flatness": false,
+   "foot_flatness": "True",
    "arm_quality": true,
    "stance_openness": true
   },
   "flat_pct": [
    100.0,
-   88.73239436619718
-  ]
+   98.25581395348837
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
  },
  {
   "frames_out": 149,
   "duration_s": 2.966666666666667,
   "lift": {
-   "frames_penetrating": 18,
-   "max_penetration_m": -0.01939413213443681,
-   "max_lift_m": 0.006453535958712003,
-   "after_min_m": -0.013000000000000024
+   "frames_penetrating": 0,
+   "max_penetration_m": -0.01228988256654869,
+   "max_lift_m": 0.0,
+   "after_min_m": -0.01228988256654869
   },
-  "sole_z_after_mean": 0.5768013596534729,
-  "name": "dance2_subject4_2835_2925",
-  "csv": "work/retarget_csv/dance2_subject4_f1.csv",
-  "start": 2835,
-  "end": 2925,
-  "source": "dance2_subject4",
-  "gates": {
-   "flat_l": 100.0,
-   "flat_r": 100.0,
-   "flat_min": 100.0
-  },
+  "sole_z_after_mean": 0.6034274697303772,
+  "name": "dance2_subject3_1305_1395",
+  "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+  "start": 1305,
+  "end": 1395,
+  "source": "dance2_subject3",
+  "gates": null,
   "tier": "A",
   "gate": {
    "ground": true,
@@ -478,17 +302,177 @@
   "flat_pct": [
    100.0,
    100.0
-  ]
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
  },
  {
-  "name": "dance2_subject3_300_450",
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 2,
+   "max_penetration_m": -0.019013682851786756,
+   "max_lift_m": 0.00601368285178673,
+   "after_min_m": -0.013000000000000038
+  },
+  "sole_z_after_mean": 0.5772609710693359,
+  "name": "dance2_subject3_2610_2700",
+  "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+  "start": 2610,
+  "end": 2700,
+  "source": "dance2_subject3",
+  "gates": null,
   "tier": "A",
-  "heldout": true,
-  "note": "moved to data/testsets/f1_holdout; excluded from training (generalization check)",
-  "duration_s": 5.0,
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
   "flat_pct": [
-   91.0,
+   100.0,
    100.0
-  ]
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 0,
+   "max_penetration_m": -0.006076703471871904,
+   "max_lift_m": 0.0,
+   "after_min_m": -0.006076703471871904
+  },
+  "sole_z_after_mean": 0.5970684885978699,
+  "name": "dance2_subject4_3645_3735",
+  "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+  "start": 3645,
+  "end": 3735,
+  "source": "dance2_subject4",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   90.66666666666666
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 0,
+   "max_penetration_m": -0.009289966004045814,
+   "max_lift_m": 0.0,
+   "after_min_m": -0.009289966004045814
+  },
+  "sole_z_after_mean": 0.5735481977462769,
+  "name": "dance2_subject4_4770_4860",
+  "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+  "start": 4770,
+  "end": 4860,
+  "source": "dance2_subject4",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   100.0
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 0,
+   "max_penetration_m": -0.012639771940804968,
+   "max_lift_m": 0.0,
+   "after_min_m": -0.012639771940804968
+  },
+  "sole_z_after_mean": 0.5980228781700134,
+  "name": "dance2_subject4_5355_5445",
+  "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+  "start": 5355,
+  "end": 5445,
+  "source": "dance2_subject4",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   99.2
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
+ },
+ {
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 9,
+   "max_penetration_m": -0.014778660987627949,
+   "max_lift_m": 0.0017786609876280961,
+   "after_min_m": -0.013000000000000051
+  },
+  "sole_z_after_mean": 0.596047580242157,
+  "name": "dance2_subject5_6660_6750",
+  "csv": "work/retarget_csv_flat/dance2_subject5_f1.csv",
+  "start": 6660,
+  "end": 6750,
+  "source": "dance2_subject5",
+  "gates": null,
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   100.0
+  ],
+  "recipe": "v6 (GMR v5 + foot-flatness compression)"
  }
 ]

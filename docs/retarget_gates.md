@@ -60,3 +60,16 @@ python tools/check_motion_f1.py --csv work/retarget_csv/dance1_subject3_f1.csv -
 # 扫窗
 python tools/f1_gate_windows.py --csv work/retarget_csv/dance2_subject3_f1.csv --out work/gate/x.json --win 150 --stride 75
 ```
+
+## 6. v6 配方：脚掌平贴压缩（2026-11-28，用户授权重新预注册验收片段）
+
+背景：v5 配方下，预注册验收片段 `dance1_subject3_255_706` 的参考右脚平贴率只有 93.7%（踮脚段 sole pitch 9.3–9.9°，门限 10°），6 个策略在 CPU MuJoCo / mjlab 回放中的右脚平贴率都停在 81–87%（`docs/sim2sim_report.md` §3–§10）。种子、迭代数、接触奖励、训练片段筛选都不改变这一点；现有 8 个 LAFAN 舞蹈源里过物理门且双脚 ≥80% 平贴的窗口全部已入库，无可补窗口。用户在"接受 3/4 / 改重定向并重新预注册 / 放宽约束"中授权 **改重定向并重新预注册**。
+
+做法（`tools/f1_flatten_feet.py`，v5 CSV → v6 CSV）：对每只脚按 gate 7 的定义找支撑期（触地连续 ≥5 帧@30fps），支撑期内把 sole pitch 超过 4° 的部分、sole roll 超过 3° 的部分各乘 0.2（10° 踮脚 → 5.2°，18° → 6.9°），只改踝 pitch/roll 关节（FK 数值测得的增益，单关节改动 ≤0.35 rad），根高只升不降；支撑权重在 ±3 帧内渐变，修正量做 5 帧滑动平均。髋/膝/躯干/手臂、根 xy 与朝向不变；摆动腿的脚掌姿态不变（保留舞蹈内容）。随后沿用原流程：抬根（仅根高）→ 50 Hz 重采样 → 九门。
+
+结果（`docs/retarget_gate_table.md`，`work/gate_flat/final/*.json`）：
+- 四个验收窗口（同一帧区间）参考平贴率：`dance1_subject3_255_706` 97.2/93.7 → **100/100**（pitch p95 8.8/10.5° → 4.4/4.6°）；`dance2_subject1_352_795` 90.2/93.3 → 98.3/99.4；`dance2_subject4_2835_2925` 100/100 → 100/100；held-out `dance2_subject3_300_450` 90.5/100 → 100/100。九门全过。
+- 扫窗（90/150/300 帧）：九门通过窗口从 v5 的 ~6 个增至 49 个（dance2_subject3 为主），训练库从 13 段/76.3 s（3 A + 10 B）改为 **14 段/85.3 s 全 Tier A**（3 个验收训练段 + 11 个不重叠的新 Tier A 窗口），held-out 不变。v5 库保留在 `data/motions/f1_v5recipe/`。
+- 代价：踮脚被压平，动作与 LAFAN1 原舞者的脚掌姿态不再一致（这是用户授权的取舍）；踝关节在支撑期的改动均值 0.02 rad、最大 0.35 rad（少数帧）。
+
+验收片段的身份、A1–A5 阈值与判定脚本不变（`docs/acceptance_plan.md` 修订 v2）。
