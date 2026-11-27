@@ -1,0 +1,18 @@
+{
+ "policy": "f1_dance_flat85_dance1_subject3_255_706.onnx",
+ "oracle": false,
+ "kinematic": false,
+ "motion": "dance1_subject3_255_706",
+ "frames_played": 750,
+ "frames_total": 750,
+ "success": true,
+ "fell_at": null,
+ "joint_err_rad": 0.030399408937907834,
+ "body_err_local_m": 0.008095627734381676,
+ "body_err_m": 0.02474325812977659,
+ "root_err_m": 0.022714841343585864,
+ "min_base_z": 0.5386312789820648,
+ "max_tilt_rad": 0.5413975717014249,
+ "first_obs_absmax": 3.148832321166992,
+ "first_action_absmax": 4.835927486419678
+}

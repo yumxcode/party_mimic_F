@@ -69,5 +69,8 @@ simulator (`scripts/f1_native_eval.py`, `tools/f1_native_compare.py`) agrees wit
   93.7 %). All clips stay up (A1), local body error 7.4-9.4 mm trained / 44.5 mm held-out (A2), joint
   error 0.031-0.065 rad (A3), no hip-roll adduction (A5). Thresholds were not changed; the gap is the
   policy's foot-pitch tracking precision, not the sim2sim tool (native replay gives 86.1 %).
+* A4 follow-up (single-variable runs, all 3/4): seed 1 -> 86.4 %, `--contact_reward 0.25` -> 84.7 %,
+  training on the 8 clips with both feet >= 85 % flat -> 87.1 %. No further qualifying LAFAN dance
+  windows exist for the nine-gate library (all 20 physically valid >= 80 %-flat windows are in use).
 * Details, per-gate numbers, the training-task ids and all disclosures: `docs/sim2sim_report.md`.
   Comparison video: `videos/f1_dance_v1_compare.mp4`. Resumption notes: `PROGRESS.md`.
