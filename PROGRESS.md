@@ -40,7 +40,8 @@
 | TASK_20261127_779 | 83 | v2 36k（370f83c） | 失败：轮子文件名 %2B 不被 uv 接受 |
 | TASK_20261127_780 | 85 | 原生回放（370f83c） | 同上失败 |
 | **TASK_20261127_800** | 83 | v2 36k（a3114d5，镜像回退成功） | 完成 01:39（36000 it，1.72 h） |
-| **TASK_20261128_031** | 83 | v2 checkpoint 评估+导出（`f1_ckpt_export.py`） | 01:53 提交 |
+| TASK_20261128_031 | 83 | v2 checkpoint 评估+导出（`f1_ckpt_export.py`） | 失败：evaluate.py 缺 --run_dir（argparse rc=2）；直连 uv sync 已恢复（244 s） |
+| **TASK_20261128_038** | 83 | 同上，已修（ad8fcc3） | 02:36 提交 |
 | **TASK_20261127_801** | 85 | 原生回放（a3114d5） | 23:31 提交 | 容器内 `/workspace/output/f1_dance_v1_*.pt`；日志 `/workspace/PartyMimic/logs/f1_dance_v1/train_log.csv`；下载：`./work/gm.sh 85 task model list --task-id TASK_20261127_632`，`./work/gm_fetch_models.sh 85 TASK_20261127_632 eval/f1_dance_v1` |
 
 注意：建任务时不要填 `personalDataPath=/personal`（账号 85 无个人存储，run 会报 601 "没有文件"），已用 `task edit` 清空。
