@@ -1,0 +1,28 @@
+{
+  "cmd": [
+    "uv",
+    "run",
+    "--frozen",
+    "python",
+    "-u",
+    "-m",
+    "partymimic.train",
+    "--robot",
+    "f1",
+    "--log_dir",
+    "logs/f1_dance_v1",
+    "--seed",
+    "0",
+    "--iterations",
+    "12000",
+    "--num_envs",
+    "4096",
+    "--motion_dir",
+    "data/motions/f1",
+    "--ckpt_minutes",
+    "20.0"
+  ],
+  "pm_ref": "main",
+  "pm_head": "0c17a6335af7d4c72cb8a46f1462e857d8b6505f",
+  "PM_F1_EAGER_COLLECT": "0"
+}
