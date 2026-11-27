@@ -93,8 +93,8 @@ def _main(args, summary: dict) -> None:
     results = {}
     for name, ck in ckpts.items():
         out = log_dir / f"eval_{Path(name).stem}.json"
-        p = boot.run(["uv", "run", "--no-sync", "python", "-m", "partymimic.evaluate", "--robot", "f1", "--ckpt", str(ck),
-                      "--motion_dir", "data/motions/f1", "--out", str(out), "--repeats", "1"], cwd=pm, tail=6, check=False)
+        p = boot.run(["uv", "run", "--no-sync", "python", "-m", "partymimic.evaluate", "--robot", "f1", "--run_dir", str(log_dir),
+                      "--ckpt", str(ck), "--motion_dir", "data/motions/f1", "--out", str(out), "--repeats", "1"], cwd=pm, tail=6, check=False)
         if out.exists():
             r = json.loads(out.read_text())
             results[name] = {k: r[k] for k in ("norm_return", "norm_return_framew", "n_failed", "fail_rate")}
