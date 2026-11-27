@@ -138,7 +138,19 @@ def main() -> None:
     (log_dir / "bootstrap_cmd.json").write_text(json.dumps({"cmd": cmd, "pm_ref": PM_REF}, indent=2))
     run(cmd, cwd=pm, check=False, tail=60)
 
-    # 6. publish checkpoints where the gradmotion SDK looks
+    # 6. export one ONNX per clip (policy + that reference motion baked in)
+    ckpt = log_dir / "last.pt"
+    if ckpt.exists() and not args.smoke:
+        clips = sorted((pm / "data" / "motions" / "f1").glob("*.npz"))
+        clips += sorted((pm / "data" / "testsets" / "f1_holdout").glob("*.npz"))
+        out_dir = pm / "output_onnx"
+        out_dir.mkdir(exist_ok=True)
+        for c in clips:
+            dst = out_dir / f"{args.tag}_{c.stem}.onnx"
+            run(["uv", "run", "--frozen", "python", "tools/export_onnx.py", "--robot", "f1",
+                 "--ckpt", str(ckpt), "--motion", str(c), "--out", str(dst)], cwd=pm, check=False, tail=6)
+
+    # 7. publish checkpoints where the gradmotion SDK looks
     if args.smoke:
         print("[boot] smoke run: no checkpoint copy", flush=True)
         return
@@ -146,6 +158,11 @@ def main() -> None:
     out.mkdir(exist_ok=True)
     for p in sorted(log_dir.glob("*.pt")):
         dst = out / f"{args.tag}_{p.stem}.pt"
+        shutil.copy2(p, dst)
+        print(f"[boot] published {dst} ({dst.stat().st_size/1e6:.1f} MB)", flush=True)
+    # ONNX files travel as .pt so the SDK uploads them (rename back to .onnx after download)
+    for p in sorted((pm / "output_onnx").glob("*.onnx")):
+        dst = out / (p.name + ".pt")
         shutil.copy2(p, dst)
         print(f"[boot] published {dst} ({dst.stat().st_size/1e6:.1f} MB)", flush=True)
     print("[boot] DONE", flush=True)
