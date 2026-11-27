@@ -84,9 +84,18 @@ A4/A5 的计算：回放轨迹写成 PartyMimic 格式的 `<clip>_motion.npz`（
 - gradmotion 镜像内没有 onnxruntime，上游 `export_onnx.py` 自带的 ONNX-vs-torch 数值校验被跳过；为核实导出与跨栈一致性，另提交了 PartyMimic 原生仿真器（mjlab/MuJoCo-Warp）的回放任务 TASK_20261127_676（记录逐步 obs/goal/action 并做 ONNX-vs-torch 校验），结果见 §6。
 - 账号：A14 的账号（id=79，项目 PRO_20261127_007）余额 20 且被其它任务占用，本次改用 id=85（余额 50，训练后 44.5）；训练前已查余额。
 
-## 6. 原生栈回放（TASK_20261127_676）
+## 6. 原生栈回放（PartyMimic 自己的仿真器，跨栈对照；验收裁决仍以 §3 的 CPU MuJoCo 回放为准）
 
-（待填：任务排队中。）
+目的：把 A4 的 86.4% 归因到"工具/物理栈差异"还是"策略精度"。`scripts/f1_native_eval.py` + `tools/f1_native_replay.py` 在 mjlab/MuJoCo-Warp 里按 `evaluate.py` 的方式从第 0 帧回放 4 段，逐步记录 obs 历史、goal、动作、状态，并在真实观测上做 ONNX-vs-torch 校验（训练镜像没有 onnxruntime，上游导出脚本自带的这项校验被跳过了）。
+
+判读规则（读结果前写下）：
+1. ONNX-vs-torch 最大绝对差 ≪ 动作尺度（例如 < 0.05）→ 导出无误；否则只修导出，不重训。
+2. 原生第 0 帧的观测历史与 `tools/f1_sim2sim.py` 在同一 reset 状态算出的观测逐元素对比（容差 1e-5）→ 数值验证 obs 布局（含 6D 相对姿态的元素顺序）。
+3. 原生回放的 q/根位姿写成 `_motion.npz` 跑 `check_motion_f1.py`：若 mjlab 里右脚平贴率 ≥ 90% 而 CPU MuJoCo 为 86.4% → 两套物理栈的差异，需修 sim2sim 保真度；若两边都 ≈ 86% → 策略/数据侧，再比较右踝的目标、参考与实际，区分"策略给错目标"与"PD/接触受限"。
+
+过程记录：首次提交 TASK_20261127_676 因平台把含 `% & =` 的启动脚本清空（容器日志 `START_SCRIPT:` 为空）而空跑 3 分钟；改为 base64 传 URL 后重提 TASK_20261127_685。
+
+（结果待填。）
 
 ## 7. 复现
 
