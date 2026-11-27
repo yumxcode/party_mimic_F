@@ -243,6 +243,8 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--motion_dir", default=None)
     ap.add_argument("--extra", default="", help="extra train.py flags, space separated")
+    ap.add_argument("--contact_reward", type=float, default=0.0,
+                    help="PartyMimic --contact_reward (InstantTrack foot-contact reward, training only); 0: off")
     ap.add_argument("--ckpt_minutes", type=float, default=20.0,
                     help="PartyMimic --ckpt_minutes: also checkpoint every n minutes (0: only every --ckpt_every)")
     ap.add_argument("--skip_sync", action="store_true")
@@ -304,6 +306,7 @@ def _main(args, summary: dict) -> None:
 
     # 5. train
     extra = args.extra.split() + (["--ckpt_minutes", str(args.ckpt_minutes)] if args.ckpt_minutes > 0 else [])
+    extra += ["--contact_reward", str(args.contact_reward)] if args.contact_reward > 0 else []
     base_env = dict(os.environ)
 
     def run_train(tag: str, iterations: int, num_envs: int, check: bool, eager: bool, require_ckpt: bool):
