@@ -278,7 +278,10 @@ def _main(args, summary: dict) -> None:
     summary["pm_head"] = head
 
     # 2. copy the F1 additions
-    for rel in ("src/partymimic/f1", "assets/f1", "data/motions/f1", "data/testsets/f1_holdout"):
+    copy_dirs = ["src/partymimic/f1", "assets/f1", "data/motions/f1", "data/testsets/f1_holdout"]
+    if args.motion_dir and args.motion_dir not in copy_dirs:
+        copy_dirs.append(args.motion_dir)  # a variant library (e.g. data/motions/f1_flat85)
+    for rel in copy_dirs:
         src, dst = HERE / rel, pm / rel
         if not src.exists():
             raise SystemExit(f"missing {src}")

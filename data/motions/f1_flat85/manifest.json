@@ -1,0 +1,298 @@
+[
+ {
+  "frames_out": 750,
+  "duration_s": 15.0,
+  "lift": {
+   "frames_penetrating": 6,
+   "max_penetration_m": -0.019500898044101336,
+   "max_lift_m": 0.006500898044101426,
+   "after_min_m": -0.01300000000000001
+  },
+  "sole_z_after_mean": 0.5884198546409607,
+  "name": "dance1_subject3_255_706",
+  "csv": "work/retarget_csv/dance1_subject3_f1.csv",
+  "start": 255,
+  "end": 706,
+  "source": "dance1_subject3",
+  "gates": {
+   "flat_l": 97,
+   "flat_r": 94,
+   "flat_min": 97
+  },
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   97.16981132075472,
+   93.73333333333333
+  ]
+ },
+ {
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 70,
+   "max_penetration_m": -0.04332889916472454,
+   "max_lift_m": 0.0303288991647246,
+   "after_min_m": -0.013000000000000058
+  },
+  "sole_z_after_mean": 0.5364130735397339,
+  "name": "dance1_subject3_3465_3555",
+  "csv": "work/retarget_csv/dance1_subject3_f1.csv",
+  "start": 3465,
+  "end": 3555,
+  "source": "dance1_subject3",
+  "gates": {
+   "flat_l": 87.5,
+   "flat_r": 85.54216867469879,
+   "flat_min": 85.54216867469879
+  },
+  "tier": "B",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": false,
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   88.35616438356165,
+   85.60606060606061
+  ]
+ },
+ {
+  "frames_out": 737,
+  "duration_s": 14.733333333333333,
+  "lift": {
+   "frames_penetrating": 34,
+   "max_penetration_m": -0.019025626085863043,
+   "max_lift_m": 0.00602562608586304,
+   "after_min_m": -0.013000000000000051
+  },
+  "sole_z_after_mean": 0.6019745469093323,
+  "name": "dance2_subject1_352_795",
+  "csv": "work/retarget_csv/dance2_subject1_f1.csv",
+  "start": 352,
+  "end": 795,
+  "source": "dance2_subject1",
+  "gates": {
+   "flat_l": 90,
+   "flat_r": 93,
+   "flat_min": 90
+  },
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   90.24725274725274,
+   93.27846364883402
+  ]
+ },
+ {
+  "frames_out": 249,
+  "duration_s": 4.966666666666667,
+  "lift": {
+   "frames_penetrating": 13,
+   "max_penetration_m": -0.015887119508793415,
+   "max_lift_m": 0.002923276412538152,
+   "after_min_m": -0.013000000000000024
+  },
+  "sole_z_after_mean": 0.5792103409767151,
+  "name": "dance2_subject3_1050_1200",
+  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
+  "start": 1050,
+  "end": 1200,
+  "source": "dance2_subject3",
+  "gates": {
+   "flat_l": 87.33333333333333,
+   "flat_r": 89.33333333333333,
+   "flat_min": 87.33333333333333
+  },
+  "tier": "B",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": false,
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   87.55020080321285,
+   88.75502008032129
+  ]
+ },
+ {
+  "frames_out": 249,
+  "duration_s": 4.966666666666667,
+  "lift": {
+   "frames_penetrating": 82,
+   "max_penetration_m": -0.03317436681405443,
+   "max_lift_m": 0.020174366814054462,
+   "after_min_m": -0.013000000000000065
+  },
+  "sole_z_after_mean": 0.5814745426177979,
+  "name": "dance2_subject3_3225_3375",
+  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
+  "start": 3225,
+  "end": 3375,
+  "source": "dance2_subject3",
+  "gates": {
+   "flat_l": 92.74193548387096,
+   "flat_r": 85.71428571428571,
+   "flat_min": 85.71428571428571
+  },
+  "tier": "B",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": false,
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   94.76190476190476,
+   86.88524590163934
+  ]
+ },
+ {
+  "frames_out": 249,
+  "duration_s": 4.966666666666667,
+  "lift": {
+   "frames_penetrating": 9,
+   "max_penetration_m": -0.0201513773487252,
+   "max_lift_m": 0.007151377348725,
+   "after_min_m": -0.013000000000000024
+  },
+  "sole_z_after_mean": 0.5803294777870178,
+  "name": "dance2_subject3_5550_5700",
+  "csv": "work/retarget_csv/dance2_subject3_f1.csv",
+  "start": 5550,
+  "end": 5700,
+  "source": "dance2_subject3",
+  "gates": {
+   "flat_l": 100.0,
+   "flat_r": 85.71428571428571,
+   "flat_min": 85.71428571428571
+  },
+  "tier": "B",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": false,
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   99.59839357429718,
+   86.66666666666667
+  ]
+ },
+ {
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 46,
+   "max_penetration_m": -0.02807409141286689,
+   "max_lift_m": 0.015074091412866824,
+   "after_min_m": -0.013000000000000038
+  },
+  "sole_z_after_mean": 0.5637184381484985,
+  "name": "dance2_subject4_2745_2835",
+  "csv": "work/retarget_csv/dance2_subject4_f1.csv",
+  "start": 2745,
+  "end": 2835,
+  "source": "dance2_subject4",
+  "gates": {
+   "flat_l": 100.0,
+   "flat_r": 86.51685393258427,
+   "flat_min": 86.51685393258427
+  },
+  "tier": "B",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": false,
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   88.73239436619718
+  ]
+ },
+ {
+  "frames_out": 149,
+  "duration_s": 2.966666666666667,
+  "lift": {
+   "frames_penetrating": 18,
+   "max_penetration_m": -0.01939413213443681,
+   "max_lift_m": 0.006453535958712003,
+   "after_min_m": -0.013000000000000024
+  },
+  "sole_z_after_mean": 0.5768013596534729,
+  "name": "dance2_subject4_2835_2925",
+  "csv": "work/retarget_csv/dance2_subject4_f1.csv",
+  "start": 2835,
+  "end": 2925,
+  "source": "dance2_subject4",
+  "gates": {
+   "flat_l": 100.0,
+   "flat_r": 100.0,
+   "flat_min": 100.0
+  },
+  "tier": "A",
+  "gate": {
+   "ground": true,
+   "self_penetration": true,
+   "joint_limits": true,
+   "joint_velocities": true,
+   "root_height": true,
+   "continuity": true,
+   "foot_flatness": "True",
+   "arm_quality": true,
+   "stance_openness": true
+  },
+  "flat_pct": [
+   100.0,
+   100.0
+  ]
+ }
+]
