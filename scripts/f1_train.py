@@ -135,7 +135,7 @@ def uv_sync(pm: Path, attempts: int = 1, timeout: int = 720) -> str:
     p = run(["uv", "sync", "--frozen", "--no-install-package", "torch"], cwd=pm, env=env, tail=30, check=False, timeout=timeout)
     if p.returncode != 0:
         raise SystemExit("uv sync (without torch) failed")
-    whl = WS / "torch_wheel" / wheel_name
+    whl = WS / "torch_wheel" / wheel_name.replace("%2B", "+")  # wheel filenames carry a literal '+', not %2B
     whl.parent.mkdir(exist_ok=True)
     for k in range(1, 4):
         p = run(["curl", "-L", "--retry", "3", "-C", "-", "-s", "-S", "-o", str(whl), TORCH_MIRROR + wheel_name], cwd=WS,
