@@ -111,6 +111,8 @@ def main() -> None:
         g = gates[args.stance_min_frames]
         flat_l = g["foot_flatness"]["left"]["flat_pct"]
         flat_r = g["foot_flatness"]["right"]["flat_pct"]
+        stance_frames = [g["foot_flatness"]["left"]["frames"], g["foot_flatness"]["right"]["frames"]]
+        a4_valid = min(stance_frames) >= 10  # gate 7's own minimum sample: fewer stance frames = no verdict
         adduct = g["stance_openness"]["both_hiproll_adducted"]["pct"]
         g5 = gates.get(5, {})
         a2_mm = sim["body_err_local_m"] * 1000.0
@@ -119,7 +121,7 @@ def main() -> None:
             "A1_no_fall": sim["success"],
             "A2_local_body_err": a2_mm <= a2_lim,
             "A3_joint_err": sim["joint_err_rad"] <= th["A3_rad"],
-            "A4_foot_flat": min(flat_l, flat_r) >= th["A4_pct"],
+            "A4_foot_flat": bool(a4_valid and min(flat_l, flat_r) >= th["A4_pct"]),
             "A5_hiproll_adduct": adduct <= th["A5_pct"],
         }
         ok = all(checks.values())
@@ -129,7 +131,8 @@ def main() -> None:
             "A1_fall": not sim["success"], "fell_at": sim["fell_at"], "min_base_z": sim["min_base_z"],
             "max_tilt_rad": sim["max_tilt_rad"],
             "A2_local_mm": a2_mm, "A2_limit_mm": a2_lim, "A3_joint_rad": sim["joint_err_rad"], "A3_limit": th["A3_rad"],
-            "A4_flat_l": flat_l, "A4_flat_r": flat_r, "A4_limit": th["A4_pct"],
+            "A4_flat_l": flat_l, "A4_flat_r": flat_r, "A4_limit": th["A4_pct"], "A4_stance_frames": stance_frames,
+            "A4_valid": a4_valid,
             "A5_adduct_pct": adduct, "A5_limit": th["A5_pct"],
             "A4_sensitivity_smf5": [g5.get("foot_flatness", {}).get("left", {}).get("flat_pct"),
                                     g5.get("foot_flatness", {}).get("right", {}).get("flat_pct")],
@@ -154,9 +157,12 @@ def main() -> None:
         L.append(f"| {r['clip']} | {r['kind']} | {r['frames_played']}/{r['frames_total']} | "
                  f"{'FELL@' + str(r['fell_at']) if r['A1_fall'] else 'no'} | "
                  f"{r['A2_local_mm']:.1f} ({r['A2_limit_mm']:.0f}) | {r['A3_joint_rad']:.4f} ({r['A3_limit']}) | "
-                 f"{r['A4_flat_l']:.1f}/{r['A4_flat_r']:.1f} ({r['A4_limit']:.0f}) | {r['A5_adduct_pct']:.2f} ({r['A5_limit']}) | "
+                 f"{r['A4_flat_l']:.1f}/{r['A4_flat_r']:.1f} ({r['A4_limit']:.0f}){'' if r['A4_valid'] else ' INVALID(<10 stance frames)'} | "
+                 f"{r['A5_adduct_pct']:.2f} ({r['A5_limit']}) | "
                  f"{'✓' if r['pass'] else '✗'} |")
-    L += ["", "A4 with the checker's default stance run (5 frames @ 50 Hz, sensitivity only): " +
+    L += ["", "A4 stance frames per clip (gate 7 sample size, minimum 10): " +
+          "; ".join(f"{r['clip']}: {r['A4_stance_frames'][0]}/{r['A4_stance_frames'][1]}" for r in rows if "error" not in r), "",
+          "A4 with the checker's default stance run (5 frames @ 50 Hz, sensitivity only): " +
           "; ".join(f"{r['clip']}: {r['A4_sensitivity_smf5'][0]:.1f}/{r['A4_sensitivity_smf5'][1]:.1f}" for r in rows if "error" not in r)]
     (out / "acceptance.md").write_text("\n".join(L) + "\n")
     print("\n".join(L))

@@ -28,9 +28,11 @@
 
 ## 下一步
 
-1. 提交并推送 bootstrap 修复；在账号 85 建项目/任务并运行；timer park 等待 smoke 结果（约 10 分钟后看日志尾部是否出现 `cuda_graph: captured one collection step` 或 `[f1] collection CUDA graph: OFF`，以及 `it 50 | ... it/s`）。
-2. 训练期间核实：manifest/Tier、kp/kd 来源、质量 32.22 vs 35.03、`tools/f1_sim2sim.py` 的 A1–A5 实现与 `docs/acceptance_plan.md` 一致。
-3. 训练完成后：`gm task model list` 下载 ONNX(.pt)/checkpoint → 本地 `tools/f1_sim2sim.py` 回放 4 段 → A1–A5 判定 → `docs/sim2sim_report.md` → 对比视频 → 推送。
+1. 训练 TASK_20261127_632：进度只看产物——`./work/gm.sh 85 task logs --task-id TASK_20261127_632 --raw --no-request-log | grep -a -o 'published [^ ]*'`（训练子进程输出被 bootstrap 收集，任务日志里没有 it/s）；SDK 文件检测时间戳给出 ≈5.7 it/s（2000 it ≈ 5.8 min），12000 it 预计 19:22 结束，随后导出 14 个 ONNX（`.onnx.pt`）。
+2. 结束后：`./work/gm_fetch_models.sh 85 TASK_20261127_632 eval/f1_dance_v1`，把 `*.onnx.pt` 改回 `.onnx`，`train_log_csv.pt` 改回 csv；确认 train_log 最后一行 iteration=12000（任务状态 5 不等于训练完成）。
+3. `python tools/f1_acceptance.py --onnx_dir eval/f1_dance_v1 --tag f1_dance_v1 --out eval/f1_dance_v1/acceptance` → A1–A5 表（stance 8 帧@50 Hz；A4 样本 <10 帧标 INVALID）。
+4. `python tools/f1_render_compare.py --rollout eval/f1_dance_v1/acceptance/*.npz --out videos/f1_dance_v1_compare.mp4 --stride 2`（<25 MB）。
+5. 报告 docs/sim2sim_report.md + README 状态；未过门则如实写差距，属数据/重定向问题的回数据层补库重训。
 
 ## 注意事项
 

@@ -260,6 +260,9 @@ def main():
     ap.add_argument("--out", default=None, help="rollout npz (also writes <stem>_motion.npz for check_motion_f1.py)")
     ap.add_argument("--json", default=None)
     ap.add_argument("--max_frames", type=int, default=0, help="debug: stop after this many frames (0: whole clip)")
+    ap.add_argument("--kinematic", action="store_true",
+                    help="self-check: teleport the robot to the reference every frame instead of stepping (A2/A3 ~ 0, "
+                         "A4/A5 = the reference's gates; exercises the full-length frame alignment and the motion npz)")
     args = ap.parse_args()
     assert args.onnx or args.oracle_npz, "--onnx or --oracle_npz"
 
@@ -376,10 +379,19 @@ def main():
     while fell_at is None and f < T - 1:
         data.ctrl[ctrl_adr] = q0 + alpha * a
         for _ in range(DECIMATION):
-            mujoco.mj_step(model, data)
+            if not args.kinematic:
+                mujoco.mj_step(model, data)
         a_rec.append(a.copy())
         f += 1
         jq, qd, bp, bq, bv, bw, nq = reference_at(f)
+        if args.kinematic:  # the reference *is* the robot state at frame f (root pose, velocities, joints)
+            data.qpos[0:3] = bp[0]
+            data.qpos[3:7] = bq[0] / np.linalg.norm(bq[0])
+            data.qpos[qadr] = jq
+            data.qvel[0:3] = bv[0]
+            data.qvel[3:6] = quat_to_mat(bq[0]).T @ bw[0]
+            data.qvel[dadr] = qd
+            mujoco.mj_forward(model, data)
         record(f, jq, bp, bq)
         if fallen() or f >= T - 1:
             if fallen():
@@ -412,6 +424,7 @@ def main():
     res = {
         "policy": pol.name,
         "oracle": args.oracle_npz is not None,
+        "kinematic": args.kinematic,
         "motion": meta.get("motion"),
         "frames_played": int(n),
         "frames_total": int(T),
