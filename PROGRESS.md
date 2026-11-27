@@ -1,6 +1,6 @@
 # PROGRESS — F1 29DOF PartyMimic 跳舞（A14 续跑）
 
-> 可随时中断续接的进度文件。时间均为 CST。**本任务已到终止状态（2026-11-28 03:30）：按预注册止损分支不再追加训练；若续接，从"下一步（可选）"开始。**
+> 可随时中断续接的进度文件。时间均为 CST。**2026-11-28 03:40 续：完成度审核要求继续攻关 A4 并做数据侧实验——三个单变量实验已提交（seed 1 / contact_reward 0.25 / flat85 数据子集），预计 ~05:00 出结果；见下方"A4 攻关实验"。**
 
 ## 最终状态
 
@@ -16,7 +16,17 @@
 | 对比视频 | 完成 | `videos/f1_dance_v1_compare.mp4`（参考｜策略，18.7 MB，25 fps，37.8 s，4 段） |
 | 报告/文档 | 完成 | `docs/sim2sim_report.md`（§0 结论、§1 训练、§2 工具、§3 结果、§4 差距分析、§5 披露、§6 原生回放、§8–9 v2）；README 状态已更新 |
 
-## gradmotion 任务（全部已结束）
+## A4 攻关实验（进行中，2026-11-28 03:40 提交；lab_notebook exp_f5125d37 / exp_a557f372 / exp_91338346）
+
+| 实验 | 任务号 | 账号 | 单变量 | 产物 | 完成后 |
+|---|---|---|---|---|---|
+| seed 1 | TASK_20261128_062 | 85 | seed 0→1 | `f1_dance_s1_*.onnx.pt` | `./work/gm_fetch_models.sh 85 TASK_20261128_062 eval/f1_dance_s1 <clip>.onnx` ×4 + train_log；改名 `<tag>_f1_dance_s1_<clip>.onnx.pt`→`f1_dance_s1_<clip>.onnx`；`tools/f1_acceptance.py --tag f1_dance_s1` |
+| contact_reward 0.25 | TASK_20261128_063 | 85 | PartyMimic `--contact_reward 0.25` | `f1_dance_contact_*` | 同上，tag `f1_dance_contact` |
+| flat85 数据子集 | TASK_20261128_064 | 83 | 训练库 13 段→8 段（双脚 ≥85%） | `f1_dance_flat85_*` | 同上，tag `f1_dance_flat85` |
+
+数据侧现状（无可补窗口的证据）：8 个 LAFAN 舞蹈源的全部扫窗 JSON（w90/w150/w300）里，过物理门（1–6、8、9）且双脚平贴 ≥80% 的窗口共 20 个，全部已在库中或与库重叠；LAFAN1 没有其它舞蹈文件；UMR 的 F1 数据对应 F1.5 模型（A14 核对，其舞蹈片段未过门）。
+
+## gradmotion 任务（11-28 03:40 前）
 
 | 任务号 | 账号 | 内容 | 结果 |
 |---|---|---|---|
