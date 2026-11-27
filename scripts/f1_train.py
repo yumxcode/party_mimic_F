@@ -110,7 +110,7 @@ def clone_partyMimic(pm: Path, tries: int = 4) -> None:
 TORCH_MIRROR = "https://mirrors.aliyun.com/pytorch-wheels/cu128/"
 
 
-def uv_sync(pm: Path, attempts: int = 2, timeout: int = 1500) -> str:
+def uv_sync(pm: Path, attempts: int = 1, timeout: int = 900) -> str:
     """``uv sync --frozen`` (the authors' lock). The gradmotion hosts' route to download.pytorch.org
     stalled for hours on 2026-11-27 (8 MB range: 0 B in 60 s; PyPI was fine), so after ``attempts``
     bounded tries everything but torch is installed from the lock and the torch wheel (the very file
