@@ -29,7 +29,32 @@ from pathlib import Path
 PM_REPO = "https://github.com/Roboparty/PartyMimic.git"
 PM_REF = "main"
 WS = Path("/workspace")
-HERE = Path(__file__).resolve().parent.parent
+
+
+def find_repo() -> Path:
+    """Locate this repository inside the task container (gradmotion may clone it under a different
+    name, and gm-run may resolve the script through a symlink)."""
+    marker = Path("src/partymimic/f1/f1_constants.py")
+    cands = []
+    if os.environ.get("PM_F1_REPO"):
+        cands.append(Path(os.environ["PM_F1_REPO"]))
+    try:
+        cands.append(Path(__file__).resolve().parent.parent)
+    except NameError:
+        pass
+    cands += [Path.cwd(), WS / "party_mimic_F", WS]
+    for c in cands:
+        for d in (c, *c.parents):
+            if (d / marker).exists():
+                return d
+    for d in sorted(WS.glob("*")):
+        if (d / marker).exists():
+            return d
+    print("[boot] /workspace listing:", [p.name for p in WS.glob("*")], flush=True)
+    raise SystemExit(f"cannot find the repository (marker {marker}); __file__={__file__} cwd={Path.cwd()}")
+
+
+HERE = find_repo()
 
 
 def run(cmd, cwd=None, env=None, check=True, tail=None):
