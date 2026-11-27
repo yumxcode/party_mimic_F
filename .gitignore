@@ -22,3 +22,6 @@ logs/
 output/
 *.pt
 *.onnx
+
+# vendor visual meshes for rendering (symlink to the local F1_29DOF checkout)
+assets/f1/meshes
