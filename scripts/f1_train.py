@@ -108,9 +108,10 @@ def clone_partyMimic(pm: Path, tries: int = 4) -> None:
 
 
 TORCH_MIRROR = "https://mirrors.aliyun.com/pytorch-wheels/cu128/"
+TORCH_WHEEL_MIN_BYTES = 8e8  # the cu128 torch 2.9.0 wheel is 900 MB; a smaller file is a failed download
 
 
-def uv_sync(pm: Path, attempts: int = 1, timeout: int = 900) -> str:
+def uv_sync(pm: Path, attempts: int = 1, timeout: int = 720) -> str:
     """``uv sync --frozen`` (the authors' lock). The gradmotion hosts' route to download.pytorch.org
     stalled for hours on 2026-11-27 (8 MB range: 0 B in 60 s; PyPI was fine), so after ``attempts``
     bounded tries everything but torch is installed from the lock and the torch wheel (the very file
@@ -127,7 +128,7 @@ def uv_sync(pm: Path, attempts: int = 1, timeout: int = 900) -> str:
     lock = (pm / "uv.lock").read_text()
     m = re.search(r'url = "https://download-r2\.pytorch\.org/whl/cu128/(torch-2\.9\.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64\.whl)", hash = "sha256:([0-9a-f]{64})"', lock)
     assert m, "torch wheel entry not found in uv.lock"
-    wheel_name, wheel_sha = m.group(2), m.group(3)
+    wheel_name, wheel_sha = m.group(1), m.group(2)
     p = run(["uv", "sync", "--frozen", "--no-install-package", "torch"], cwd=pm, env=env, tail=30, check=False, timeout=timeout)
     if p.returncode != 0:
         raise SystemExit("uv sync (without torch) failed")
@@ -136,7 +137,7 @@ def uv_sync(pm: Path, attempts: int = 1, timeout: int = 900) -> str:
     for k in range(1, 4):
         p = run(["curl", "-L", "--retry", "3", "-C", "-", "-s", "-S", "-o", str(whl), TORCH_MIRROR + wheel_name], cwd=WS,
                 check=False, timeout=3600)
-        if p.returncode == 0 and whl.exists() and whl.stat().st_size > 8e8:
+        if p.returncode == 0 and whl.exists() and whl.stat().st_size > TORCH_WHEEL_MIN_BYTES:
             break
         blog(f"torch wheel download attempt {k}/3 failed (rc={p.returncode}, {whl.stat().st_size if whl.exists() else 0} B)")
         time.sleep(30)
