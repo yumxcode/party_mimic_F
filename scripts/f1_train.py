@@ -125,7 +125,7 @@ def uv_sync(pm: Path, attempts: int = 2, timeout: int = 1500) -> str:
             return "direct"
         blog(f"uv sync attempt {k}/{attempts} failed (rc={p.returncode})")
     lock = (pm / "uv.lock").read_text()
-    m = re.search(r'url = "(https://download\.pytorch\.org/whl/cu128/(torch-2\.9\.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64\.whl))", hash = "sha256:([0-9a-f]{64})"', lock)
+    m = re.search(r'url = "https://download-r2\.pytorch\.org/whl/cu128/(torch-2\.9\.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64\.whl)", hash = "sha256:([0-9a-f]{64})"', lock)
     assert m, "torch wheel entry not found in uv.lock"
     wheel_name, wheel_sha = m.group(2), m.group(3)
     p = run(["uv", "sync", "--frozen", "--no-install-package", "torch"], cwd=pm, env=env, tail=30, check=False, timeout=timeout)
