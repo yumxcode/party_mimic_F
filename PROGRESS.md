@@ -12,8 +12,8 @@
 | sim2sim 工具 | 完成 | 重写物理/观测对拍、A4/A5、kinematic 自检；修了 6D 相对姿态元素顺序 bug（修前回放 0.3 s 内倒，属工具错误） |
 | 验收 A1–A5 | **3/4 段通过，总体未通过** | `dance1_subject3_255_706` A4 右脚 86.4% < 90%；其余全过（A2 7.4–9.4 mm，held-out 44.5 mm）。见 `docs/sim2sim_report.md` |
 | 对比视频 | 完成 | `videos/f1_dance_v1_compare.mp4`（18.7 MB） |
-| 原生栈回放核对 | **暂停（平台网络）** | 685 已证实原生整段 749 步不终止（记录未发布）；731 卡在 uv sync 已停止；探针 736 显示 download.pytorch.org 停滞、PyPI 正常。网络恢复后重提（.gm/task_native_c.json 改名 -d）。原计划：ONNX-vs-torch 校验 + 原生仿真器里的同一片段回放；判读规则见 docs/sim2sim_report.md §6；下载 `./work/gm_fetch_models.sh 85 TASK_20261127_731 eval/native`。（676 平台清空启动脚本而空跑；685 跑完原生回放 749 步——策略在 mjlab 里也全程未终止——但我的 ONNX 校验按整批喂入 fixed-batch 模型报错，产物未发布，已修为逐步校验） |
-| 重训 v2（36k it，单变量） | **暂停（平台网络）** | 684 在 `uv sync` 卡住 74 min（venv 骨架建好后无任何包落盘），21:06 已手动停止止损；bootstrap 已改为 uv sync 限时 40 min × 3 次重试（437afd1）。网络探针 TASK_20261127_736（账号 85）跑完后决定何时重提 v2 与原生回放 |
+| 原生栈回放核对 | 进行中 | **TASK_20261127_749**（21:46 提交，账号 85，bootstrap f43d746 含镜像回退）；下载 `./work/gm_fetch_models.sh 85 TASK_20261127_749 eval/native`。背景：685 已证实原生整段 749 步不终止（记录未发布）；731 卡在 uv sync 已停止。原计划：ONNX-vs-torch 校验 + 原生仿真器里的同一片段回放；判读规则见 docs/sim2sim_report.md §6；下载 `./work/gm_fetch_models.sh 85 TASK_20261127_731 eval/native`。（676 平台清空启动脚本而空跑；685 跑完原生回放 749 步——策略在 mjlab 里也全程未终止——但我的 ONNX 校验按整批喂入 fixed-batch 模型报错，产物未发布，已修为逐步校验） |
+| 重训 v2（36k it，单变量） | 进行中 | **TASK_20261127_748**（21:46 提交，账号 83，bootstrap f43d746）：684 曾在 uv sync 卡住 74 min（download.pytorch.org 停滞，探针 736 实测），已改为 15 min 直连 → 阿里云 pytorch-wheels 镜像取同一 torch 轮子（sha256 对锁文件校验）→ `uv run --no-sync`。完成后 `./work/gm_fetch_models.sh 83 TASK_20261127_748 eval/f1_dance_v2_36k` + `tools/f1_acceptance.py --tag f1_dance_v2_36k` |
 | 若 v2 仍未过 A4 | 待定 | 不再追加训练；如实报告精度极限与差距（lab_notebook exp_11393470 的止损分支） |
 
 ## gradmotion 任务
@@ -32,7 +32,9 @@
 | TASK_20261127_731 | 85 | 同上，逐步校验版（bootstrap c081c08） | 排队/运行中（20:27 提交） |
 | TASK_20261127_684 | 83 | v2 36k（bootstrap 1aa2c73） | uv sync 卡住，21:06 停止 |
 | TASK_20261127_731 | 85 | 原生回放（c081c08） | uv sync 卡住，21:03 停止 |
-| TASK_20261127_736 | 85 | `f1_net_probe.py` 下载速度探针 | 完成 21:25：pytorch.org torch 轮子 0 B/60 s（停滞），files.pythonhosted 4.9 MB/s，github 13 B/s | 容器内 `/workspace/output/f1_dance_v1_*.pt`；日志 `/workspace/PartyMimic/logs/f1_dance_v1/train_log.csv`；下载：`./work/gm.sh 85 task model list --task-id TASK_20261127_632`，`./work/gm_fetch_models.sh 85 TASK_20261127_632 eval/f1_dance_v1` |
+| TASK_20261127_736 | 85 | `f1_net_probe.py` 下载速度探针 | 完成 21:25：pytorch.org torch 轮子 0 B/60 s（停滞），files.pythonhosted 4.9 MB/s，github 13 B/s |
+| **TASK_20261127_748** | 83 | v2 36k（bootstrap f43d746：克隆重试、uv 镜像回退） | 21:46 提交 |
+| **TASK_20261127_749** | 85 | 原生回放（bootstrap f43d746） | 21:46 提交 | 容器内 `/workspace/output/f1_dance_v1_*.pt`；日志 `/workspace/PartyMimic/logs/f1_dance_v1/train_log.csv`；下载：`./work/gm.sh 85 task model list --task-id TASK_20261127_632`，`./work/gm_fetch_models.sh 85 TASK_20261127_632 eval/f1_dance_v1` |
 
 注意：建任务时不要填 `personalDataPath=/personal`（账号 85 无个人存储，run 会报 601 "没有文件"），已用 `task edit` 清空。
 
