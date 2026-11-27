@@ -90,7 +90,7 @@ if args.onnx:
     hs = np.stack(rec["hist"]).astype(np.float32)
     fs = np.array(rec["f"][: len(hs)], np.float32).reshape(-1, 1)
     acts = np.stack([sess.run(None, {"obs_history": hs[i:i + 1], "time_step": fs[i:i + 1]})[0][0] for i in range(len(hs))])
-    ta = np.stack(rec["action"][: len(hs)]).numpy()
+    ta = np.stack(rec["action"][: len(hs)])
     diff = np.abs(acts - ta)
     res["onnx_vs_torch_max_abs"] = float(diff.max())
     res["onnx_vs_torch_mean_abs"] = float(diff.mean())
