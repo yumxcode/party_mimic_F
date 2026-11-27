@@ -2,16 +2,18 @@
 
 > 可随时中断续接的进度文件。每完成一个阶段更新并提交。时间均为 CST。
 
-## 当前状态（更新于 2026-11-27 18:40）
+## 当前状态（更新于 2026-11-27 19:45）
 
 | 阶段 | 状态 | 说明 |
 |---|---|---|
-| 数据/重定向/九门/预注册验收门 | 完成（A14） | `docs/retarget_gates.md`、`docs/acceptance_plan.md`、`data/motions/f1/`（13 段 76.4 s）+ `data/testsets/f1_holdout/`（1 段） |
-| 接手核对 | 完成 | A14 的 gradmotion 任务 527 probe 成功；563/564/598 全部失败，**训练从未跑通、无 checkpoint**。根因：PartyMimic 自身采集 CUDA 图捕获 mjwarp.step 的条件图节点（驱动 < 12.4） |
-| bootstrap 修复 | 完成（待远端验证） | `scripts/f1_train.py`：mujoco_warp `opt.graph_conditional=False`（官方对驱动<12.4 的建议）+ 采集图失败时自动回退 eager；checkpoint 看护线程；held-out 片段漏拷修复；训练日志随产物发布 |
-| 远端训练 | 进行中 | 见下方"gradmotion 任务" |
-| MuJoCo sim2sim + A1–A5 判定 | 未开始 | 依赖 checkpoint/ONNX |
-| 对比视频 / 最终报告 | 未开始 | |
+| 数据/重定向/九门/预注册验收门 | 完成（A14） | `docs/retarget_gates.md`、`docs/acceptance_plan.md`、`data/motions/f1/`（13 段 76.3 s）+ `data/testsets/f1_holdout/`（1 段） |
+| 接手核对 + bootstrap 修复 | 完成 | 根因：驱动 535 无条件图节点；mujoco_warp `graph_conditional=False` + mjlab 图捕获关闭 |
+| 远端训练 v1 | **完成** | TASK_20261127_632：12000 it / 0.594 h / 5.72 it/s；产物已下载（4 个 ONNX、train_log） |
+| sim2sim 工具 | 完成 | 重写物理/观测对拍、A4/A5、kinematic 自检；修了 6D 相对姿态元素顺序 bug（修前回放 0.3 s 内倒，属工具错误） |
+| 验收 A1–A5 | **3/4 段通过，总体未通过** | `dance1_subject3_255_706` A4 右脚 86.4% < 90%；其余全过（A2 7.4–9.4 mm，held-out 44.5 mm）。见 `docs/sim2sim_report.md` |
+| 对比视频 | 完成 | `videos/f1_dance_v1_compare.mp4`（18.7 MB） |
+| 原生栈回放核对 | 进行中 | TASK_20261127_676（19:39 启动）：ONNX-vs-torch 校验 + 原生仿真器里的同一片段回放 |
+| 是否重训 v2 | 待定 | 视 676 结果：若原生回放同样 86% → 策略精度，考虑更长训练；若原生 ≥90% → 查 CPU MuJoCo 与 mjlab 的差异 |
 
 ## gradmotion 任务
 
