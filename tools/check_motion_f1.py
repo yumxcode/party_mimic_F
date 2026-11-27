@@ -47,10 +47,16 @@ import mujoco
 import numpy as np
 
 REPO = Path(__file__).resolve().parent.parent
-# identical F1 asset (md5 matched against Beyondminic-Weilai-X1/F1_29DOF)
-F1_XML = REPO / "work/f1_mocap/f1_mocap.xml"  # copy of Beyondminic GMR/assets/f1 (meshes symlinked)
+# identical F1 asset (md5 matched against Beyondminic-Weilai-X1/F1_29DOF). The FK below needs only the
+# kinematic tree and the eight sole spheres, so when the local Beyondminic copy (work/, not in git) is
+# absent the repo's own assets/f1/f1_party.xml (built from the same f1_serial.xml) is used: same bodies,
+# same joint ranges, same spheres. Likewise the URDF limits come from assets/f1/f1_urdf_limits.json
+# (generated from the vendor URDF; checked equal to the MJCF joint ranges) when the URDF is absent.
+_MOCAP_XML = REPO / "work/f1_mocap/f1_mocap.xml"
+F1_XML = _MOCAP_XML if _MOCAP_XML.exists() else REPO / "assets/f1/f1_party.xml"
 URDF = REPO / "F1_29DOF/urdf/SYS-SPEC-0002-V1.1-F1整机模型29DOF.urdf"
-TMP_DIR = F1_XML.parent
+URDF_LIMITS_JSON = REPO / "assets/f1/f1_urdf_limits.json"
+TMP_DIR = F1_XML.parent if F1_XML.parent.exists() else Path(tempfile.gettempdir())
 
 F1_JOINT_NAMES = [
     "lumbar_yaw_joint", "lumbar_roll_joint", "lumbar_pitch_joint",
@@ -142,6 +148,8 @@ CHECK_PAIRS = [
 
 
 def urdf_limits():
+    if not URDF.exists():
+        return {k: tuple(v) for k, v in json.load(open(URDF_LIMITS_JSON)).items()}
     tree = ET.parse(URDF)
     out = {}
     for j in tree.getroot().iter("joint"):

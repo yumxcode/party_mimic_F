@@ -316,8 +316,24 @@ def main():
         return np.concatenate((data.qpos[qadr] - q0, data.qvel[dadr], data.qvel[3:6],
                                -R[2, :], prev_action, mat_to_6d(R.T @ R_ref))).astype(np.float32)
 
+    def reference_at(f: int):
+        """The baked reference state of frame f (the bundled action is discarded: it is only valid for
+        the observation history of that frame, which is built after the step)."""
+        return pol.query(obs_hist, f)[1:]
+
+    def action_at(f: int, R_ref, prev_a):
+        """The policy's action for frame f from the current observation history. Guard: the last entry
+        must be the observation of the *current* robot state at frame f (a stale history silently
+        degrades an ONNX policy; the oracle ignores the history, so only this check catches it)."""
+        o = obs_hist[0, -1]
+        R = quat_to_mat(data.qpos[3:7])
+        expect = np.concatenate((data.qpos[qadr] - q0, data.qvel[dadr], data.qvel[3:6], -R[2, :], prev_a,
+                                 mat_to_6d(R.T @ R_ref))).astype(np.float32)
+        assert np.allclose(o, expect, atol=3e-5), f"stale observation history at frame {f}: max diff {np.abs(o - expect).max():.2e}"
+        return pol.query(obs_hist, f)[0]
+
     # reset on reference frame 0 (env.reset without noise): root pose, root velocities, joints, a_prev = 0
-    a, jq, qd, bp, bq, bv, bw, nq = pol.query(obs_hist, 0)
+    jq, qd, bp, bq, bv, bw, nq = reference_at(0)
     mujoco.mj_resetData(model, data)
     data.qpos[0:3] = bp[0]
     data.qpos[3:7] = bq[0] / np.linalg.norm(bq[0])
@@ -329,6 +345,8 @@ def main():
     data.ctrl[ctrl_adr] = jq             # env.reset: set_joint_position_target(q)
     mujoco.mj_forward(model, data)
     obs_hist[:] = obs_of(np.zeros(len(names)), R0)
+    a = action_at(0, R0, np.zeros(len(names)))  # first action from the reset observation (evaluate.py: hist = o repeated)
+    first_obs, first_action = obs_hist[0, -1].copy(), a.copy()
 
     q_rec, p_rec, r_rec, rq_rec, pos_rec, f_rec = [], [], [], [], [], []
     ref_p, ref_q, ref_rq, ref_rp = [], [], [], []
@@ -361,13 +379,16 @@ def main():
             mujoco.mj_step(model, data)
         a_rec.append(a.copy())
         f += 1
-        # the action of this frame (unused when the clip is over) and the reference at the new frame f;
-        # MDP.obs takes the relative root orientation against the reference at the *current* frame
-        a, jq, qd, bp, bq, bv, bw, nq = pol.query(obs_hist, f)
+        jq, qd, bp, bq, bv, bw, nq = reference_at(f)
         record(f, jq, bp, bq)
+        if fallen() or f >= T - 1:
+            if fallen():
+                fell_at = f
+            break
+        # observation of frame f (MDP.obs: relative root orientation against the reference at the current
+        # frame, previous action = the action just applied), then the action of frame f
         obs_hist = np.concatenate((obs_hist[:, 1:], obs_of(a_rec[-1], quat_to_mat(bq[0]))[None, None]), 1)
-        if fallen():
-            fell_at = f
+        a = action_at(f, quat_to_mat(bq[0]), a_rec[-1])
 
     q_rec, p_rec, r_rec, rq_rec, pos_rec = map(np.array, (q_rec, p_rec, r_rec, rq_rec, pos_rec))
     ref_p, ref_q, ref_rq, ref_rp = map(np.array, (ref_p, ref_q, ref_rq, ref_rp))
@@ -402,6 +423,8 @@ def main():
         "root_err_m": root_err,
         "min_base_z": float(pos_rec[:, 2].min()),
         "max_tilt_rad": float(tilt.max()),
+        "first_obs_absmax": float(np.abs(first_obs).max()),
+        "first_action_absmax": float(np.abs(first_action).max()),
     }
     print(json.dumps(res, indent=1))
     if args.out:
