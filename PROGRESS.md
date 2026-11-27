@@ -12,7 +12,7 @@
 | sim2sim 工具 | 完成 | 重写物理/观测对拍、A4/A5、kinematic 自检；修了 6D 相对姿态元素顺序 bug（修前回放 0.3 s 内倒，属工具错误） |
 | 验收 A1–A5 | **3/4 段通过，总体未通过** | `dance1_subject3_255_706` A4 右脚 86.4% < 90%；其余全过（A2 7.4–9.4 mm，held-out 44.5 mm）。见 `docs/sim2sim_report.md` |
 | 对比视频 | 完成 | `videos/f1_dance_v1_compare.mp4`（18.7 MB） |
-| 原生栈回放核对 | 进行中 | TASK_20261127_685（19:51 提交，账号 85，排队中）：ONNX-vs-torch 校验 + 原生仿真器里的同一片段回放；判读规则见 docs/sim2sim_report.md §6；下载 `./work/gm_fetch_models.sh 85 TASK_20261127_685 eval/native`。（676 因平台清空含 %&= 的启动脚本而空跑） |
+| 原生栈回放核对 | 进行中 | TASK_20261127_731（20:27 提交，账号 85）：ONNX-vs-torch 校验 + 原生仿真器里的同一片段回放；判读规则见 docs/sim2sim_report.md §6；下载 `./work/gm_fetch_models.sh 85 TASK_20261127_731 eval/native`。（676 平台清空启动脚本而空跑；685 跑完原生回放 749 步——策略在 mjlab 里也全程未终止——但我的 ONNX 校验按整批喂入 fixed-batch 模型报错，产物未发布，已修为逐步校验） |
 | 重训 v2（36k it，单变量） | 进行中 | TASK_20261127_684（19:51 启动，账号 83/PRO_20261127_085）：`--iterations 36000 --tag f1_dance_v2_36k`，预计 ~21:45 结束；完成后 `./work/gm_fetch_models.sh 83 TASK_20261127_684 eval/f1_dance_v2_36k` 并跑 `tools/f1_acceptance.py --tag f1_dance_v2_36k`。（681 因 github.com 克隆 GnuTLS 瞬时错误失败，bootstrap 已加克隆重试） |
 | 若 v2 仍未过 A4 | 待定 | 不再追加训练；如实报告精度极限与差距（lab_notebook exp_11393470 的止损分支） |
 
@@ -28,7 +28,8 @@
 | **TASK_20261127_632** | 85 (PRO_20261127_084) | `gm-run party_mimic_F/scripts/f1_train.py --smoke_then_full --iterations 12000 --num_envs 4096 --tag f1_dance_v1`（bootstrap 7338c64） | **完成 19:24**（smoke 18:47 通过；12000 it，0.594 h） |
 | TASK_20261127_676 | 85 | `f1_native_eval.py --ckpt_url <含 %&= 的 URL>` | 空跑（平台清空启动脚本） |
 | TASK_20261127_681 | 83 | v2 36k（bootstrap e544c75） | 失败：github.com 克隆 GnuTLS 瞬时错误 |
-| TASK_20261127_685 | 85 | `f1_native_eval.py --ckpt_url_b64 <base64> --tag f1_dance_v1` | 排队中（19:51 提交） |
+| TASK_20261127_685 | 85 | `f1_native_eval.py --ckpt_url_b64 <base64>` | 失败：原生回放完成(749 步)但 ONNX 校验批维度报错，未发布产物 |
+| TASK_20261127_731 | 85 | 同上，逐步校验版（bootstrap c081c08） | 排队/运行中（20:27 提交） |
 | **TASK_20261127_684** | 83 (PRO_20261127_085) | `f1_train.py --smoke_then_full --iterations 36000 --num_envs 4096 --tag f1_dance_v2_36k`（bootstrap 1aa2c73） | **运行中（19:51 启动）** | 容器内 `/workspace/output/f1_dance_v1_*.pt`；日志 `/workspace/PartyMimic/logs/f1_dance_v1/train_log.csv`；下载：`./work/gm.sh 85 task model list --task-id TASK_20261127_632`，`./work/gm_fetch_models.sh 85 TASK_20261127_632 eval/f1_dance_v1` |
 
 注意：建任务时不要填 `personalDataPath=/personal`（账号 85 无个人存储，run 会报 601 "没有文件"），已用 `task edit` 清空。
