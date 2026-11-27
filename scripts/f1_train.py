@@ -129,6 +129,9 @@ def uv_sync(pm: Path, attempts: int = 1, timeout: int = 720) -> str:
     m = re.search(r'url = "https://download-r2\.pytorch\.org/whl/cu128/(torch-2\.9\.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64\.whl)", hash = "sha256:([0-9a-f]{64})"', lock)
     assert m, "torch wheel entry not found in uv.lock"
     wheel_name, wheel_sha = m.group(1), m.group(2)
+    # the killed sync leaves .venv/.lock behind, after which uv "audits" the empty venv as up to date
+    # (0.3 s, rc=0, nothing installed: TASK_20261127_762/763): start from a clean venv
+    shutil.rmtree(pm / ".venv", ignore_errors=True)
     p = run(["uv", "sync", "--frozen", "--no-install-package", "torch"], cwd=pm, env=env, tail=30, check=False, timeout=timeout)
     if p.returncode != 0:
         raise SystemExit("uv sync (without torch) failed")
@@ -145,7 +148,9 @@ def uv_sync(pm: Path, attempts: int = 1, timeout: int = 720) -> str:
     if h != wheel_sha:
         raise SystemExit(f"torch wheel sha256 {h} != lock {wheel_sha}")
     blog(f"torch wheel from {TORCH_MIRROR}: {whl.stat().st_size / 1e6:.0f} MB, sha256 ok")
-    run(["uv", "pip", "install", "--python", str(pm / ".venv/bin/python"), str(whl)], cwd=pm, tail=5)
+    # --no-deps: the sync above installed torch's dependencies (nvidia-* wheels from PyPI)
+    p = run(["uv", "pip", "install", "--python", str(pm / ".venv/bin/python"), "--no-deps", str(whl)], cwd=pm, tail=8)
+    run(["uv", "run", "--no-sync", "python", "-c", "import torch; print('torch', torch.__version__, 'cuda', torch.version.cuda)"], cwd=pm, tail=3)
     return "aliyun-mirror"
 
 
