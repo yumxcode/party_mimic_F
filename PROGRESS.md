@@ -12,8 +12,9 @@
 | sim2sim 工具 | 完成 | 重写物理/观测对拍、A4/A5、kinematic 自检；修了 6D 相对姿态元素顺序 bug（修前回放 0.3 s 内倒，属工具错误） |
 | 验收 A1–A5 | **3/4 段通过，总体未通过** | `dance1_subject3_255_706` A4 右脚 86.4% < 90%；其余全过（A2 7.4–9.4 mm，held-out 44.5 mm）。见 `docs/sim2sim_report.md` |
 | 对比视频 | 完成 | `videos/f1_dance_v1_compare.mp4`（18.7 MB） |
-| 原生栈回放核对 | 进行中 | TASK_20261127_676（19:39 启动）：ONNX-vs-torch 校验 + 原生仿真器里的同一片段回放 |
-| 是否重训 v2 | 待定 | 视 676 结果：若原生回放同样 86% → 策略精度，考虑更长训练；若原生 ≥90% → 查 CPU MuJoCo 与 mjlab 的差异 |
+| 原生栈回放核对 | 进行中 | TASK_20261127_676（19:39 启动，账号 85）：ONNX-vs-torch 校验 + 原生仿真器里的同一片段回放；下载 `./work/gm_fetch_models.sh 85 TASK_20261127_676 eval/native` |
+| 重训 v2（36k it，单变量） | 进行中 | TASK_20261127_681（19:52 提交，账号 83/PRO_20261127_085，排队中）：`--iterations 36000 --tag f1_dance_v2_36k`，预计启动后 ~1 h 50 min；完成后同样跑 `tools/f1_acceptance.py --tag f1_dance_v2_36k` |
+| 若 v2 仍未过 A4 | 待定 | 不再追加训练；如实报告精度极限与差距（lab_notebook exp_11393470 的止损分支） |
 
 ## gradmotion 任务
 
@@ -24,7 +25,9 @@
 | 任务号 | 账号 | 启动脚本 | 状态 | 产物 / checkpoint |
 |---|---|---|---|---|
 | TASK_20261127_598 | 79 | `--smoke_then_full`（旧 bootstrap） | 失败 17:23 | 无 |
-| **TASK_20261127_632** | 85 (PRO_20261127_084) | `gm-run party_mimic_F/scripts/f1_train.py --smoke_then_full --iterations 12000 --num_envs 4096 --tag f1_dance_v1`（bootstrap 7338c64） | **运行中，18:28 启动；smoke 18:47 通过（采集图捕获成功，eager 未启用），full run 18:48 开始** | 容器内 `/workspace/output/f1_dance_v1_*.pt`；日志 `/workspace/PartyMimic/logs/f1_dance_v1/train_log.csv`；下载：`./work/gm.sh 85 task model list --task-id TASK_20261127_632`，`./work/gm_fetch_models.sh 85 TASK_20261127_632 eval/f1_dance_v1` |
+| **TASK_20261127_632** | 85 (PRO_20261127_084) | `gm-run party_mimic_F/scripts/f1_train.py --smoke_then_full --iterations 12000 --num_envs 4096 --tag f1_dance_v1`（bootstrap 7338c64） | **完成 19:24**（smoke 18:47 通过；12000 it，0.594 h） |
+| TASK_20261127_676 | 85 | `gm-run party_mimic_F/scripts/f1_native_eval.py --ckpt_url <OSS> --tag f1_dance_v1` | 运行中（19:39 启动） |
+| **TASK_20261127_681** | 83 (PRO_20261127_085) | `gm-run party_mimic_F/scripts/f1_train.py --smoke_then_full --iterations 36000 --num_envs 4096 --tag f1_dance_v2_36k`（bootstrap e544c75） | 排队/运行中（19:52 提交） | 容器内 `/workspace/output/f1_dance_v1_*.pt`；日志 `/workspace/PartyMimic/logs/f1_dance_v1/train_log.csv`；下载：`./work/gm.sh 85 task model list --task-id TASK_20261127_632`，`./work/gm_fetch_models.sh 85 TASK_20261127_632 eval/f1_dance_v1` |
 
 注意：建任务时不要填 `personalDataPath=/personal`（账号 85 无个人存储，run 会报 601 "没有文件"），已用 `task edit` 清空。
 
