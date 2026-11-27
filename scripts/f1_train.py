@@ -100,6 +100,8 @@ def main() -> None:
     ap.add_argument("--extra", default="", help="extra train.py flags, space separated")
     ap.add_argument("--skip_sync", action="store_true")
     ap.add_argument("--smoke", action="store_true", help="2 iterations, 64 envs, no checkpoint copy")
+    ap.add_argument("--smoke_then_full", action="store_true",
+                    help="run a 2-iteration smoke first; if it produces a checkpoint, continue with the full run")
     args = ap.parse_args()
 
     pm = WS / "PartyMimic"
@@ -129,14 +131,28 @@ def main() -> None:
 
     # 5. train
     extra = args.extra.split()
-    cmd = ["uv", "run", "--frozen", "python", "-u", "-m", "partymimic.train",
-           "--robot", "f1", "--log_dir", f"logs/{args.tag}", "--seed", str(args.seed),
-           "--iterations", str(args.iterations), "--num_envs", str(args.num_envs),
-           "--motion_dir", args.motion_dir or "data/motions/f1", *extra]
+
+    def run_train(tag: str, iterations: int, num_envs: int, check: bool) -> None:
+        cmd = ["uv", "run", "--frozen", "python", "-u", "-m", "partymimic.train",
+               "--robot", "f1", "--log_dir", f"logs/{tag}", "--seed", str(args.seed),
+               "--iterations", str(iterations), "--num_envs", str(num_envs),
+               "--motion_dir", args.motion_dir or "data/motions/f1", *extra]
+        ld = pm / "logs" / tag
+        ld.mkdir(parents=True, exist_ok=True)
+        (ld / "bootstrap_cmd.json").write_text(json.dumps({"cmd": cmd, "pm_ref": PM_REF}, indent=2))
+        run(cmd, cwd=pm, check=check, tail=60)
+        if not (ld / "last.pt").exists():
+            raise SystemExit(f"no checkpoint produced in {ld}")
+
+    if args.smoke_then_full:
+        print("[boot] === smoke phase (2 iterations, 64 envs) ===", flush=True)
+        run_train("_smoke", 2, 64, check=True)
+        print("[boot] === smoke ok, full run ===", flush=True)
+        run_train(args.tag, args.iterations, args.num_envs, check=False)
+    else:
+        run_train(args.tag, args.iterations, args.num_envs, check=False)
+
     log_dir = pm / "logs" / args.tag
-    log_dir.mkdir(parents=True, exist_ok=True)
-    (log_dir / "bootstrap_cmd.json").write_text(json.dumps({"cmd": cmd, "pm_ref": PM_REF}, indent=2))
-    run(cmd, cwd=pm, check=False, tail=60)
 
     # 6. export one ONNX per clip (policy + that reference motion baked in)
     ckpt = log_dir / "last.pt"
