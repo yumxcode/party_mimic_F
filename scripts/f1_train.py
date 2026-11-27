@@ -107,6 +107,47 @@ def clone_partyMimic(pm: Path, tries: int = 4) -> None:
     raise SystemExit(f"could not clone {PM_REPO} after {tries} attempts")
 
 
+TORCH_MIRROR = "https://mirrors.aliyun.com/pytorch-wheels/cu128/"
+
+
+def uv_sync(pm: Path, attempts: int = 2, timeout: int = 1500) -> str:
+    """``uv sync --frozen`` (the authors' lock). The gradmotion hosts' route to download.pytorch.org
+    stalled for hours on 2026-11-27 (8 MB range: 0 B in 60 s; PyPI was fine), so after ``attempts``
+    bounded tries everything but torch is installed from the lock and the torch wheel (the very file
+    the lock names, sha256-checked against the lock) comes from the Aliyun mirror of the PyTorch
+    wheels. Callers must then use ``uv run --no-sync`` (a sync would re-download torch)."""
+    import hashlib
+    import re
+    env = dict(os.environ, UV_HTTP_TIMEOUT="300")
+    for k in range(1, attempts + 1):
+        p = run(["uv", "sync", "--frozen"], cwd=pm, env=env, tail=30, check=False, timeout=timeout)
+        if p.returncode == 0:
+            return "direct"
+        blog(f"uv sync attempt {k}/{attempts} failed (rc={p.returncode})")
+    lock = (pm / "uv.lock").read_text()
+    m = re.search(r'url = "(https://download\.pytorch\.org/whl/cu128/(torch-2\.9\.0%2Bcu128-cp312-cp312-manylinux_2_28_x86_64\.whl))", hash = "sha256:([0-9a-f]{64})"', lock)
+    assert m, "torch wheel entry not found in uv.lock"
+    wheel_name, wheel_sha = m.group(2), m.group(3)
+    p = run(["uv", "sync", "--frozen", "--no-install-package", "torch"], cwd=pm, env=env, tail=30, check=False, timeout=timeout)
+    if p.returncode != 0:
+        raise SystemExit("uv sync (without torch) failed")
+    whl = WS / "torch_wheel" / wheel_name
+    whl.parent.mkdir(exist_ok=True)
+    for k in range(1, 4):
+        p = run(["curl", "-L", "--retry", "3", "-C", "-", "-s", "-S", "-o", str(whl), TORCH_MIRROR + wheel_name], cwd=WS,
+                check=False, timeout=3600)
+        if p.returncode == 0 and whl.exists() and whl.stat().st_size > 8e8:
+            break
+        blog(f"torch wheel download attempt {k}/3 failed (rc={p.returncode}, {whl.stat().st_size if whl.exists() else 0} B)")
+        time.sleep(30)
+    h = hashlib.sha256(whl.read_bytes()).hexdigest()
+    if h != wheel_sha:
+        raise SystemExit(f"torch wheel sha256 {h} != lock {wheel_sha}")
+    blog(f"torch wheel from {TORCH_MIRROR}: {whl.stat().st_size / 1e6:.0f} MB, sha256 ok")
+    run(["uv", "pip", "install", "--python", str(pm / ".venv/bin/python"), str(whl)], cwd=pm, tail=5)
+    return "aliyun-mirror"
+
+
 def disable_mjlab_cuda_graph(pm: Path) -> None:
     """The 4090D hosts run a CUDA driver < 12.4 (no conditional graph nodes). mjlab's own graph capture
     (create_graph -> wp.ScopedCapture -> mjwarp.step) would trip on it; make mjlab's driver check fail so
@@ -248,15 +289,7 @@ def _main(args, summary: dict) -> None:
     # 4. environment (uv's downloads stalled for >70 min on the gradmotion hosts on 2026-11-27 evening:
     #    bound each attempt and retry)
     if not args.skip_sync:
-        uv_env = dict(os.environ, UV_HTTP_TIMEOUT="300")
-        for attempt in range(1, 4):
-            p = run(["uv", "sync", "--frozen"], cwd=pm, env=uv_env, tail=40, check=False, timeout=2400)
-            if p.returncode == 0:
-                break
-            blog(f"uv sync attempt {attempt}/3 failed (rc={p.returncode}); retrying in 60 s")
-            time.sleep(60)
-        else:
-            raise SystemExit("uv sync failed 3 times")
+        blog(f"uv sync: {uv_sync(pm)}")
     disable_mjlab_cuda_graph(pm)
     disable_mjwarp_conditional_graph(pm)
 
@@ -266,7 +299,7 @@ def _main(args, summary: dict) -> None:
 
     def run_train(tag: str, iterations: int, num_envs: int, check: bool, eager: bool, require_ckpt: bool):
         env = dict(base_env, PM_F1_EAGER_COLLECT="1" if eager else "0")
-        cmd = ["uv", "run", "--frozen", "python", "-u", "-m", "partymimic.train",
+        cmd = ["uv", "run", "--no-sync", "python", "-u", "-m", "partymimic.train",
                "--robot", "f1", "--log_dir", f"logs/{tag}", "--seed", str(args.seed),
                "--iterations", str(iterations), "--num_envs", str(num_envs),
                "--motion_dir", args.motion_dir or "data/motions/f1", *extra]
@@ -328,7 +361,7 @@ def _main(args, summary: dict) -> None:
         summary["export_ckpt"] = ckpt.name
         for c in clips:
             dst = out_dir / f"{args.tag}_{c.stem}.onnx"
-            run(["uv", "run", "--frozen", "python", "tools/export_onnx.py", "--robot", "f1",
+            run(["uv", "run", "--no-sync", "python", "tools/export_onnx.py", "--robot", "f1",
                  "--ckpt", str(ckpt), "--motion", str(c), "--out", str(dst)], cwd=pm, check=False, tail=6)
         # ONNX files travel as .pt so the SDK uploads them (rename back to .onnx after download)
         for q in sorted(out_dir.glob("*.onnx")):
