@@ -13,7 +13,7 @@
 | 验收 A1–A5 | **3/4 段通过，总体未通过** | `dance1_subject3_255_706` A4 右脚 86.4% < 90%；其余全过（A2 7.4–9.4 mm，held-out 44.5 mm）。见 `docs/sim2sim_report.md` |
 | 对比视频 | 完成 | `videos/f1_dance_v1_compare.mp4`（18.7 MB） |
 | 原生栈回放核对 | 进行中 | **TASK_20261127_801**（23:31 提交，账号 85，bootstrap a3114d5：轮子按真实文件名保存）；下载 `./work/gm_fetch_models.sh 85 TASK_20261127_801 eval/native`。背景：685 已证实原生整段 749 步不终止（记录未发布）；731 卡在 uv sync 已停止。原计划：ONNX-vs-torch 校验 + 原生仿真器里的同一片段回放；判读规则见 docs/sim2sim_report.md §6；下载 `./work/gm_fetch_models.sh 85 TASK_20261127_731 eval/native`。（676 平台清空启动脚本而空跑；685 跑完原生回放 749 步——策略在 mjlab 里也全程未终止——但我的 ONNX 校验按整批喂入 fixed-batch 模型报错，产物未发布，已修为逐步校验） |
-| 重训 v2（36k it，单变量） | 进行中 | **TASK_20261127_800**（23:31 提交，账号 83，bootstrap a3114d5；779 因镜像轮子文件名含 %2B 被 uv 拒绝；748/749 因回退正则组号错误失败，762/763 因被杀死的 uv sync 留下 .venv/.lock 导致后续 sync 认为环境已同步而失败——镜像下载本身 25 s/901 MB 正常）：684 曾在 uv sync 卡住 74 min（download.pytorch.org 停滞，探针 736 实测），已改为 15 min 直连 → 阿里云 pytorch-wheels 镜像取同一 torch 轮子（sha256 对锁文件校验）→ `uv run --no-sync`。完成后 `./work/gm_fetch_models.sh 83 TASK_20261127_800 eval/f1_dance_v2_36k` + `tools/f1_acceptance.py --tag f1_dance_v2_36k` |
+| 重训 v2（36k it，单变量） | 进行中 | **TASK_20261127_800**（23:29 启动，账号 83；uv 镜像回退生效，smoke 通过，训练中，预计 ~01:30 结束；748/749 因回退正则组号错误失败，762/763 因被杀死的 uv sync 留下 .venv/.lock 导致后续 sync 认为环境已同步而失败——镜像下载本身 25 s/901 MB 正常）：684 曾在 uv sync 卡住 74 min（download.pytorch.org 停滞，探针 736 实测），已改为 15 min 直连 → 阿里云 pytorch-wheels 镜像取同一 torch 轮子（sha256 对锁文件校验）→ `uv run --no-sync`。完成后 `./work/gm_fetch_models.sh 83 TASK_20261127_800 eval/f1_dance_v2_36k` + `tools/f1_acceptance.py --tag f1_dance_v2_36k` |
 | 若 v2 仍未过 A4 | 待定 | 不再追加训练；如实报告精度极限与差距（lab_notebook exp_11393470 的止损分支） |
 
 ## gradmotion 任务
