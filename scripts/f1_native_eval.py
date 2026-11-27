@@ -12,7 +12,7 @@ sync, disable the two CUDA-graph captures), then
   4. publish the records to /workspace/output as .pt (the SDK uploads every file there).
 
 Usage:
-    gm-run party_mimic_F/scripts/f1_native_eval.py --ckpt_url <oss url of f1_dance_v1_last.pt> --tag f1_dance_v1
+    gm-run party_mimic_F/scripts/f1_native_eval.py --ckpt_url_b64 <base64 of the oss url> --tag f1_dance_v1
 """
 from __future__ import annotations
 
@@ -20,6 +20,7 @@ import argparse
 import json
 import shutil
 import sys
+import time
 import urllib.request
 from pathlib import Path
 
@@ -33,7 +34,9 @@ CLIPS = ["dance1_subject3_255_706", "dance2_subject1_352_795", "dance2_subject4_
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ckpt_url", required=True)
+    ap.add_argument("--ckpt_url_b64", required=True,
+                    help="base64 of the signed gradmotion OSS url (the platform's start-script handling drops "
+                         "strings with % & = characters: TASK_20261127_676 ran with an empty START_SCRIPT)")
     ap.add_argument("--tag", default="f1_dance_v1")
     ap.add_argument("--clips", default=",".join(CLIPS), help="training clips (data/motions/f1/<clip>.npz)")
     ap.add_argument("--holdout", default="dance2_subject3_300_450")
@@ -51,8 +54,7 @@ def main() -> None:
 
 def _main(args, summary: dict) -> None:
     pm = WS / "PartyMimic"
-    if not (pm / ".git").exists():
-        boot.run(["git", "clone", "--depth", "1", "--branch", boot.PM_REF, boot.PM_REPO, str(pm)], cwd=WS)
+    boot.clone_partyMimic(pm)
     head = boot.run(["git", "rev-parse", "HEAD"], cwd=pm, check=False).stdout.strip()
     boot.blog(f"PartyMimic HEAD: {head}")
     summary["pm_head"] = head
@@ -78,8 +80,17 @@ def _main(args, summary: dict) -> None:
     log_dir.mkdir(parents=True, exist_ok=True)
     ckpt = log_dir / "last.pt"
     if not ckpt.exists():
-        boot.blog(f"downloading checkpoint ({args.ckpt_url.split('?')[0].rsplit('/', 1)[-1]})")
-        urllib.request.urlretrieve(args.ckpt_url, ckpt)
+        import base64
+        url = base64.b64decode(args.ckpt_url_b64.strip()).decode()
+        for k in range(1, 4):
+            try:
+                boot.blog(f"downloading checkpoint ({url.split('?')[0].rsplit('/', 1)[-1]}), attempt {k}")
+                urllib.request.urlretrieve(url, ckpt)
+                break
+            except Exception as e:  # noqa: BLE001
+                boot.blog(f"download failed: {e!r}")
+                ckpt.unlink(missing_ok=True)
+                time.sleep(20)
         boot.blog(f"checkpoint: {ckpt.stat().st_size / 1e6:.1f} MB")
     # evaluate.py reads args.json next to the checkpoint for --interface; the checkpoint carries args too
     ck_meta = boot.run(["uv", "run", "--no-sync", "python", "-c",

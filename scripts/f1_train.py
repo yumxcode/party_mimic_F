@@ -87,6 +87,21 @@ def run(cmd, cwd=None, env=None, check=True, tail=None):
     return p
 
 
+def clone_partyMimic(pm: Path, tries: int = 4) -> None:
+    """git clone of upstream PartyMimic with retries: the gradmotion hosts see transient
+    'GnuTLS recv error (-110)' against github.com (TASK_20261127_681 died on its first attempt)."""
+    for k in range(1, tries + 1):
+        if (pm / ".git").exists():
+            return
+        p = run(["git", "clone", "--depth", "1", "--branch", PM_REF, PM_REPO, str(pm)], cwd=WS, check=False)
+        if p.returncode == 0 and (pm / ".git").exists():
+            return
+        blog(f"git clone attempt {k}/{tries} failed (rc={p.returncode}); retrying in 30 s")
+        shutil.rmtree(pm, ignore_errors=True)
+        time.sleep(30)
+    raise SystemExit(f"could not clone {PM_REPO} after {tries} attempts")
+
+
 def disable_mjlab_cuda_graph(pm: Path) -> None:
     """The 4090D hosts run a CUDA driver < 12.4 (no conditional graph nodes). mjlab's own graph capture
     (create_graph -> wp.ScopedCapture -> mjwarp.step) would trip on it; make mjlab's driver check fail so
@@ -205,8 +220,7 @@ def main() -> None:
 
 def _main(args, summary: dict) -> None:
     pm = WS / "PartyMimic"
-    if not (pm / ".git").exists():
-        run(["git", "clone", "--depth", "1", "--branch", PM_REF, PM_REPO, str(pm)], cwd=WS)
+    clone_partyMimic(pm)
     head = run(["git", "rev-parse", "HEAD"], cwd=pm, check=False).stdout.strip()
     blog(f"PartyMimic HEAD: {head}")
     summary["pm_head"] = head
