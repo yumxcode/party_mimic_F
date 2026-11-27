@@ -166,7 +166,8 @@ def gradient(x, dt):
 
 
 def mat_to_6d(R):
-    return np.concatenate((R[:, 0], R[:, 1]))
+    """PartyMimic rotations.mat_to_6d: the first two columns, flattened row-major -> [R00, R01, R10, R11, R20, R21]."""
+    return R[:, :2].reshape(6)
 
 
 def yaw_mat(R):
