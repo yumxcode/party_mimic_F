@@ -1,19 +1,26 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Bootstrap PartyMimic + the F1 29DOF additions on gradmotion, then train.
 
 gradmotion clones this repository into /workspace/party_mimic_F and runs
 ``gm-run party_mimic_F/scripts/f1_train.py [args]``. This script
 
-  1. clones upstream PartyMimic (pinned) into /workspace/PartyMimic,
-  2. copies in src/partymimic/f1, assets/f1 and data/motions/f1,
-  3. applies the two backward-compatible edits of tools/patch_partymimic.py,
-  4. ``uv sync`` (the authors' lock: torch 2.9.0+cu128, mjlab 1.6, mujoco-warp 3.11),
-  5. runs ``python -m partymimic.train --robot f1 ...``,
-  6. copies the checkpoints to /workspace/output/<name>.pt, the directory the gradmotion SDK
-     uploads as model files.
+  1. clones upstream PartyMimic (main) into /workspace/PartyMimic,
+  2. copies in src/partymimic/f1, assets/f1, data/motions/f1 and data/testsets/f1_holdout,
+  3. applies the backward-compatible edits of tools/patch_partymimic.py (feet bodies, eager-collect
+     switch, SimulationCfg graph switch),
+  4. ``uv sync --frozen`` (the authors' lock: torch 2.9.0+cu128, mjlab 1.6, mujoco-warp 3.11),
+  5. turns the CUDA-graph captures that need conditional graph nodes off (the 4090D hosts run a CUDA
+     driver < 12.4): mjlab's own capture (driver check) and MuJoCo-Warp's conditional solver loop
+     (``Model.opt.graph_conditional = False`` = mujoco_warp's own recommendation for driver < 12.4;
+     the solver then runs a fixed-iteration loop that PartyMimic's collection graph can capture),
+  6. runs ``python -m partymimic.train --robot f1 ...`` (``--smoke_then_full``: a 2-iteration / 64-env
+     smoke first; if its collection-graph capture fails, once more with ``PM_F1_EAGER_COLLECT=1``),
+  7. exports one ONNX per clip (policy + that reference motion baked in),
+  8. publishes checkpoints / ONNX / the training log to /workspace/output (the directory the
+     gradmotion SDK uploads); a background thread republishes new checkpoints every 60 s.
 
 Usage (inside the task):
-    gm-run party_mimic_F/scripts/f1_train.py --iterations 12000 --tag f1_dance_s0
+    gm-run party_mimic_F/scripts/f1_train.py --smoke_then_full --iterations 12000 --num_envs 4096 --tag f1_dance_v1
 """
 from __future__ import annotations
 
@@ -23,12 +30,22 @@ import os
 import shutil
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
 PM_REPO = "https://github.com/Roboparty/PartyMimic.git"
 PM_REF = "main"
 WS = Path("/workspace")
+COND_GRAPH_ERR = "Conditional graph nodes require CUDA driver"
+
+BOOT: list[str] = []  # every bootstrap line, re-printed at the end (the task log keeps only its last 200 KB)
+
+
+def blog(msg: str) -> None:
+    line = f"[boot] {msg}"
+    BOOT.append(line)
+    print(line, flush=True)
 
 
 def find_repo() -> Path:
@@ -50,7 +67,7 @@ def find_repo() -> Path:
     for d in sorted(WS.glob("*")):
         if (d / marker).exists():
             return d
-    print("[boot] /workspace listing:", [p.name for p in WS.glob("*")], flush=True)
+    blog(f"/workspace listing: {[p.name for p in WS.glob('*')]}")
     raise SystemExit(f"cannot find the repository (marker {marker}); __file__={__file__} cwd={Path.cwd()}")
 
 
@@ -58,36 +75,97 @@ HERE = find_repo()
 
 
 def run(cmd, cwd=None, env=None, check=True, tail=None):
-    print(f"[boot] $ {' '.join(map(str, cmd))}  (cwd={cwd})", flush=True)
+    blog(f"$ {' '.join(map(str, cmd))}  (cwd={cwd})")
     t0 = time.time()
     p = subprocess.run(cmd, cwd=cwd, env=env, text=True, capture_output=True)
     out = (p.stdout or "") + (p.stderr or "")
-    if tail:
-        out = "\n".join(out.splitlines()[-tail:])
-    print(out, flush=True)
-    print(f"[boot] rc={p.returncode} in {time.time()-t0:.1f}s", flush=True)
+    shown = "\n".join(out.splitlines()[-tail:]) if tail else out
+    print(shown, flush=True)
+    blog(f"rc={p.returncode} in {time.time() - t0:.1f}s")
     if check and p.returncode != 0:
         raise SystemExit(f"command failed: {cmd}")
     return p
 
 
 def disable_mjlab_cuda_graph(pm: Path) -> None:
-    """The 4090D hosts run a CUDA driver that warp reports as >= 12.4 but that rejects conditional
-    graph nodes ("Conditional graph nodes require CUDA driver 12.4+", raised from mjlab's
-    create_graph -> mjwarp.step -> wp.capture_while). Make mjlab's own driver check fail so no graph
-    is captured: identical physics, no capture."""
-    hits = list(pm.glob(".venv/lib/python*/site-packages/mjlab/sim/sim.py"))
+    """The 4090D hosts run a CUDA driver < 12.4 (no conditional graph nodes). mjlab's own graph capture
+    (create_graph -> wp.ScopedCapture -> mjwarp.step) would trip on it; make mjlab's driver check fail so
+    its step() runs ``mjwarp.step`` directly (identical physics; PartyMimic captures that call itself)."""
+    hits = sorted(pm.glob(".venv/lib/python*/site-packages/mjlab/sim/sim.py"))
     if not hits:
-        print("[boot] mjlab sim.py not found; skipping the cuda-graph patch", flush=True)
+        blog("mjlab sim.py not found; skipping the cuda-graph patch")
         return
     for path in hits:
         s = path.read_text()
         if "_GRAPH_CAPTURE_MIN_DRIVER = (99, 0)" in s:
-            print(f"[boot] cuda-graph patch already applied: {path}", flush=True)
+            blog(f"cuda-graph patch already applied: {path}")
             continue
         assert "_GRAPH_CAPTURE_MIN_DRIVER = (12, 4)" in s, path
         path.write_text(s.replace("_GRAPH_CAPTURE_MIN_DRIVER = (12, 4)", "_GRAPH_CAPTURE_MIN_DRIVER = (99, 0)"))
-        print(f"[boot] patched {path}: CUDA graph capture disabled (driver check)", flush=True)
+        blog(f"patched {path}: mjlab CUDA graph capture disabled (driver check)")
+
+
+def disable_mjwarp_conditional_graph(pm: Path) -> None:
+    """mujoco_warp's solver runs its Newton iterations as ``wp.capture_while`` (a conditional graph
+    node, CUDA driver >= 12.4) whenever ``Model.opt.graph_conditional`` is set (its put_model default).
+    Its own driver check says: "conditional graph nodes are not available for < 12.4 - Model.opt.
+    graph_conditional should be set to False": the solver then runs a fixed ``iterations`` loop whose
+    kernels early-return for converged worlds, and PartyMimic's collection CUDA graph captures it as
+    plain nodes."""
+    hits = sorted(pm.glob(".venv/lib/python*/site-packages/mujoco_warp/_src/io.py"))
+    assert hits, "mujoco_warp io.py not found"
+    for path in hits:
+        s = path.read_text()
+        old = "  opt.graph_conditional = True\n"
+        new = "  opt.graph_conditional = False  # F1 on gradmotion: driver < 12.4 has no conditional graph nodes\n"
+        if new in s:
+            blog(f"graph_conditional patch already applied: {path}")
+            continue
+        assert old in s, f"graph_conditional anchor not found in {path}"
+        path.write_text(s.replace(old, new, 1))
+        blog(f"patched {path}: opt.graph_conditional = False (fixed-iteration solver loop, capturable)")
+
+
+class Publisher:
+    """Copies checkpoints of the run to /workspace/output as ``<tag>_<stem>.pt``; while the run is
+    going, a daemon thread re-checks every ``period`` s (PartyMimic writes them atomically), so a run
+    that is cut short still leaves usable model files."""
+
+    def __init__(self, log_dir: Path, out: Path, prefix: str, period: float = 60.0):
+        self.log_dir, self.out, self.prefix, self.period = log_dir, out, prefix, period
+        self.seen: dict[str, tuple] = {}
+        self.stop = threading.Event()
+        self.out.mkdir(parents=True, exist_ok=True)
+
+    def publish_ckpts(self) -> list[Path]:
+        done = []
+        for p in sorted(self.log_dir.glob("*.pt")):
+            st = p.stat()
+            key = (st.st_size, int(st.st_mtime))
+            if self.seen.get(p.name) == key:
+                continue
+            dst = self.out / f"{self.prefix}_{p.stem}.pt"
+            shutil.copy2(p, dst)
+            self.seen[p.name] = key
+            blog(f"published {dst.name} ({dst.stat().st_size / 1e6:.1f} MB)")
+            done.append(dst)
+        return done
+
+    def _loop(self) -> None:
+        while not self.stop.wait(self.period):
+            try:
+                self.publish_ckpts()
+            except Exception as e:  # never kill the training from the publisher
+                blog(f"publisher error: {e!r}")
+
+    def start(self) -> None:
+        threading.Thread(target=self._loop, daemon=True).start()
+
+    def publish_as_pt(self, src: Path, name: str) -> None:
+        """A non-.pt artifact (training log, ONNX, boot summary) travels with a .pt suffix so the SDK uploads it."""
+        dst = self.out / f"{self.prefix}_{name}.pt"
+        shutil.copy2(src, dst)
+        blog(f"published {dst.name} ({dst.stat().st_size / 1e6:.1f} MB)")
 
 
 def main() -> None:
@@ -98,19 +176,43 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--motion_dir", default=None)
     ap.add_argument("--extra", default="", help="extra train.py flags, space separated")
+    ap.add_argument("--ckpt_minutes", type=float, default=20.0,
+                    help="PartyMimic --ckpt_minutes: also checkpoint every n minutes (0: only every --ckpt_every)")
     ap.add_argument("--skip_sync", action="store_true")
-    ap.add_argument("--smoke", action="store_true", help="2 iterations, 64 envs, no checkpoint copy")
+    ap.add_argument("--smoke", action="store_true", help="smoke run only (2 iterations, 64 envs), no export/publish")
+    ap.add_argument("--eager_collect", action="store_true",
+                    help="force PM_F1_EAGER_COLLECT=1 (no collection CUDA graph) for all phases")
     ap.add_argument("--smoke_then_full", action="store_true",
                     help="run a 2-iteration smoke first; if it produces a checkpoint, continue with the full run")
     args = ap.parse_args()
+    summary: dict = {"tag": args.tag}
 
+    def finish() -> None:
+        summary["boot"] = BOOT
+        (WS / "boot_summary.json").write_text(json.dumps(summary, indent=1))
+        print("\n[boot] ===== bootstrap summary (re-printed: the task log keeps only its tail) =====", flush=True)
+        for line in BOOT:
+            print(line, flush=True)
+        print("[boot] ===== end of bootstrap summary =====", flush=True)
+
+    t_boot = time.time()
+    try:
+        _main(args, summary)
+    finally:
+        summary["boot_seconds"] = round(time.time() - t_boot, 1)
+        finish()
+
+
+def _main(args, summary: dict) -> None:
     pm = WS / "PartyMimic"
     if not (pm / ".git").exists():
         run(["git", "clone", "--depth", "1", "--branch", PM_REF, PM_REPO, str(pm)], cwd=WS)
-    print("[boot] PartyMimic HEAD:", run(["git", "rev-parse", "HEAD"], cwd=pm, check=False).stdout.strip(), flush=True)
+    head = run(["git", "rev-parse", "HEAD"], cwd=pm, check=False).stdout.strip()
+    blog(f"PartyMimic HEAD: {head}")
+    summary["pm_head"] = head
 
     # 2. copy the F1 additions
-    for rel in ("src/partymimic/f1", "assets/f1", "data/motions/f1"):
+    for rel in ("src/partymimic/f1", "assets/f1", "data/motions/f1", "data/testsets/f1_holdout"):
         src, dst = HERE / rel, pm / rel
         if not src.exists():
             raise SystemExit(f"missing {src}")
@@ -118,70 +220,99 @@ def main() -> None:
         if dst.exists():
             shutil.rmtree(dst)
         shutil.copytree(src, dst)
-        print(f"[boot] copied {rel}", flush=True)
+        blog(f"copied {rel} ({len(list(dst.glob('*')))} files)")
 
-    # 3. patch PartyMimic (feet bodies, cuda-graph switch)
+    # 3. patch PartyMimic (feet bodies, eager-collect switch, SimulationCfg graph switch)
     run([sys.executable, str(HERE / "tools/patch_partymimic.py"), str(pm)], cwd=WS)
-    run(["nvidia-smi", "--query-gpu=name,driver_version", "--format=csv"], cwd=WS, check=False, tail=5)
+    run(["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv"], cwd=WS, check=False, tail=5)
 
     # 4. environment
     if not args.skip_sync:
         run(["uv", "sync", "--frozen"], cwd=pm, tail=40)
     disable_mjlab_cuda_graph(pm)
+    disable_mjwarp_conditional_graph(pm)
 
     # 5. train
-    extra = args.extra.split()
+    extra = args.extra.split() + (["--ckpt_minutes", str(args.ckpt_minutes)] if args.ckpt_minutes > 0 else [])
+    base_env = dict(os.environ)
 
-    def run_train(tag: str, iterations: int, num_envs: int, check: bool) -> None:
+    def run_train(tag: str, iterations: int, num_envs: int, check: bool, eager: bool, require_ckpt: bool):
+        env = dict(base_env, PM_F1_EAGER_COLLECT="1" if eager else "0")
         cmd = ["uv", "run", "--frozen", "python", "-u", "-m", "partymimic.train",
                "--robot", "f1", "--log_dir", f"logs/{tag}", "--seed", str(args.seed),
                "--iterations", str(iterations), "--num_envs", str(num_envs),
                "--motion_dir", args.motion_dir or "data/motions/f1", *extra]
         ld = pm / "logs" / tag
         ld.mkdir(parents=True, exist_ok=True)
-        (ld / "bootstrap_cmd.json").write_text(json.dumps({"cmd": cmd, "pm_ref": PM_REF}, indent=2))
-        run(cmd, cwd=pm, check=check, tail=60)
-        if not (ld / "last.pt").exists():
+        (ld / "bootstrap_cmd.json").write_text(json.dumps({"cmd": cmd, "pm_ref": PM_REF, "pm_head": head,
+                                                           "PM_F1_EAGER_COLLECT": env["PM_F1_EAGER_COLLECT"]}, indent=2))
+        blog(f"=== train {tag}: {iterations} iterations, {num_envs} envs, PM_F1_EAGER_COLLECT={env['PM_F1_EAGER_COLLECT']} ===")
+        p = run(cmd, cwd=pm, env=env, check=check, tail=60)
+        if require_ckpt and not (ld / "last.pt").exists():
             raise SystemExit(f"no checkpoint produced in {ld}")
+        return p
 
+    eager = bool(args.eager_collect)
     if args.smoke_then_full:
-        print("[boot] === smoke phase (2 iterations, 64 envs) ===", flush=True)
-        run_train("_smoke", 2, 64, check=True)
-        print("[boot] === smoke ok, full run ===", flush=True)
-        run_train(args.tag, args.iterations, args.num_envs, check=False)
-    else:
-        run_train(args.tag, args.iterations, args.num_envs, check=False)
+        blog("=== smoke phase (2 iterations, 64 envs) ===")
+        if eager:
+            run_train("_smoke", 2, 64, check=True, eager=True, require_ckpt=True)
+        else:
+            p = run_train("_smoke", 2, 64, check=False, eager=False, require_ckpt=False)
+            if p.returncode != 0 or not (pm / "logs" / "_smoke" / "last.pt").exists():
+                out = (p.stdout or "") + (p.stderr or "")
+                if COND_GRAPH_ERR not in out:
+                    raise SystemExit("smoke failed for a reason other than the conditional graph capture")
+                blog(f"smoke failed with '{COND_GRAPH_ERR}': retrying with PM_F1_EAGER_COLLECT=1 (no collection graph)")
+                eager = True
+                shutil.rmtree(pm / "logs" / "_smoke", ignore_errors=True)
+                run_train("_smoke", 2, 64, check=True, eager=True, require_ckpt=True)
+        summary["eager_collect"] = eager
+        blog(f"=== smoke ok (eager_collect={eager}), full run ===")
 
     log_dir = pm / "logs" / args.tag
+    pub = Publisher(log_dir, WS / "output", args.tag)
+    pub.start()
+    if args.smoke:
+        run_train(args.tag, 2, 64, check=False, eager=eager, require_ckpt=False)
+        pub.stop.set()
+        blog("smoke run: no export / checkpoint copy")
+        return
+    if args.smoke_then_full:
+        p = run_train(args.tag, args.iterations, args.num_envs, check=False, eager=eager, require_ckpt=False)
+    else:
+        p = run_train(args.tag, args.iterations, args.num_envs, check=False, eager=eager, require_ckpt=False)
+    summary["train_rc"] = p.returncode
+    pub.stop.set()
+    pub.publish_ckpts()
 
     # 6. export one ONNX per clip (policy + that reference motion baked in)
+    ckpts = sorted(log_dir.glob("ckpt_*.pt"))
     ckpt = log_dir / "last.pt"
-    if ckpt.exists() and not args.smoke:
+    if not ckpt.exists() and ckpts:
+        ckpt = ckpts[-1]
+        blog(f"no last.pt (train rc={p.returncode}): exporting the latest periodic checkpoint {ckpt.name}")
+    if ckpt.exists():
         clips = sorted((pm / "data" / "motions" / "f1").glob("*.npz"))
         clips += sorted((pm / "data" / "testsets" / "f1_holdout").glob("*.npz"))
         out_dir = pm / "output_onnx"
         out_dir.mkdir(exist_ok=True)
+        summary["export_ckpt"] = ckpt.name
         for c in clips:
             dst = out_dir / f"{args.tag}_{c.stem}.onnx"
             run(["uv", "run", "--frozen", "python", "tools/export_onnx.py", "--robot", "f1",
                  "--ckpt", str(ckpt), "--motion", str(c), "--out", str(dst)], cwd=pm, check=False, tail=6)
+        # ONNX files travel as .pt so the SDK uploads them (rename back to .onnx after download)
+        for q in sorted(out_dir.glob("*.onnx")):
+            pub.publish_as_pt(q, q.name)
+    else:
+        blog("no checkpoint at all: ONNX export skipped")
 
-    # 7. publish checkpoints where the gradmotion SDK looks
-    if args.smoke:
-        print("[boot] smoke run: no checkpoint copy", flush=True)
-        return
-    out = WS / "output"
-    out.mkdir(exist_ok=True)
-    for p in sorted(log_dir.glob("*.pt")):
-        dst = out / f"{args.tag}_{p.stem}.pt"
-        shutil.copy2(p, dst)
-        print(f"[boot] published {dst} ({dst.stat().st_size/1e6:.1f} MB)", flush=True)
-    # ONNX files travel as .pt so the SDK uploads them (rename back to .onnx after download)
-    for p in sorted((pm / "output_onnx").glob("*.onnx")):
-        dst = out / (p.name + ".pt")
-        shutil.copy2(p, dst)
-        print(f"[boot] published {dst} ({dst.stat().st_size/1e6:.1f} MB)", flush=True)
-    print("[boot] DONE", flush=True)
+    # 7. publish the training log / boot summary next to the checkpoints
+    for name in ("train_log.csv", "bootstrap_cmd.json"):
+        if (log_dir / name).exists():
+            pub.publish_as_pt(log_dir / name, name.replace(".", "_"))
+    blog("DONE")
 
 
 if __name__ == "__main__":

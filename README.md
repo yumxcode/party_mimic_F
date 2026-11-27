@@ -39,8 +39,14 @@ Repo `https://github.com/yumxcode/party_mimic_F.git`, start script
 gm-run party_mimic_F/scripts/f1_train.py --smoke_then_full --iterations 12000 --num_envs 4096 --tag f1_dance_v1
 ```
 The bootstrap clones upstream PartyMimic at `main`, copies in `src/partymimic/f1`, `assets/f1`,
-`data/motions/f1`, applies two backward-compatible patches (feet bodies, CUDA-graph off), runs
-`uv sync --frozen`, trains, exports one ONNX per clip and publishes checkpoints to `/workspace/output`.
+`data/motions/f1`, `data/testsets/f1_holdout`, applies the backward-compatible patches of
+`tools/patch_partymimic.py` (feet bodies, eager-collect switch), runs `uv sync --frozen`, disables the two
+CUDA-graph captures that need conditional graph nodes (the 4090D hosts run a CUDA driver < 12.4: mjlab's
+own capture and MuJoCo-Warp's conditional solver loop, the latter via `opt.graph_conditional=False` as
+mujoco_warp's driver check recommends), runs a 2-iteration smoke (falling back to an eager collection step
+if the collection-graph capture still fails), trains, exports one ONNX per clip and publishes checkpoints
+(every 2000 iterations / 20 min), ONNX files and `train_log.csv` to `/workspace/output` as `.pt`.
+Progress and the gradmotion task ids are kept in `PROGRESS.md`.
 
 ### 3. MuJoCo sim2sim
 ```bash
