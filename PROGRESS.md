@@ -1,6 +1,6 @@
 # PROGRESS — F1 29DOF PartyMimic 跳舞（A14 续跑）
 
-> 可随时中断续接的进度文件。时间均为 CST。**最终状态（2026-11-28 07:00）：A4 攻关的三个单变量实验（seed 1 / contact_reward / flat85 数据子集）均已完成并重判，全部 3/4 段通过、A4 右脚 84.7–87.1%；现有数据来源内无更多合格窗口；验收门仍未全过，阈值未改。若续接，只剩用户决定是否重新预注册更平的验收片段。**
+> 可随时中断续接的进度文件。时间均为 CST。**2026-11-28 07:40 续：用户选择 (b) 改重定向配方并重新预注册。v6 配方（脚掌平贴压缩）已落地：14 段 Tier A 训练库 + held-out，九门全过，验收参考平贴率 98–100%；两个重训任务已提交（TASK_20261128_101 seed 0 / TASK_20261128_102 seed 1，账号 85），预计 ~09:00 出结果；完成后下载 4 段 ONNX 跑 A1–A5。见下方"v6 重新预注册与重训"。**
 
 ## 最终状态
 
@@ -16,7 +16,17 @@
 | 对比视频 | 完成 | `videos/f1_dance_v1_compare.mp4`（参考｜策略，18.7 MB，25 fps，37.8 s，4 段） |
 | 报告/文档 | 完成 | `docs/sim2sim_report.md`（§0 结论、§1 训练、§2 工具、§3 结果、§4 差距分析、§5 披露、§6 原生回放、§8–9 v2）；README 状态已更新 |
 
-## A4 攻关实验（**已完成**，2026-11-28 05:29–06:28 运行；lab_notebook exp_f5125d37 / exp_a557f372 / exp_91338346，均 falsified）
+## v6 重新预注册与重训（进行中，2026-11-28 07:40；lab_notebook exp_af737447）
+
+| 步骤 | 状态 | 说明 |
+|---|---|---|
+| 重定向配方 v6 | 完成 | `tools/f1_flatten_feet.py`：支撑期 sole pitch >4°、roll >3° 的部分 ×0.2，只改踝关节；8 个源全部重做（`work/retarget_csv_flat/`），九门扫窗通过窗口 6→49 |
+| 训练库 | 完成 | `data/motions/f1/`：14 段 / 85.3 s 全 Tier A（3 个验收训练段 + 11 个新窗口）；`data/testsets/f1_holdout/` 同一 held-out 窗口；v5 库归档于 `*_v5recipe/`；过门表 `docs/retarget_gate_table.md` |
+| 重新预注册 | 完成 | `docs/acceptance_plan.md` 修订 v2：同 4 个窗口、同阈值、同脚本；v1 结果保留在 §5 |
+| 重训 | **进行中** | TASK_20261128_101（seed 0，`f1_dance_v3flat_s0`）、TASK_20261128_102（seed 1，`f1_dance_v3flat_s1`），账号 85，12k it/4096 envs |
+| 重判 | 待 | `./work/gm_fetch_models.sh 85 TASK_20261128_10X eval/<tag> <clip>.onnx` ×4 + train_log；改名；`tools/f1_acceptance.py --tag <tag>`；更新报告 §11、README、视频 |
+
+## A4 攻关实验（v5 参考；**已完成**，2026-11-28 05:29–06:28 运行；lab_notebook exp_f5125d37 / exp_a557f372 / exp_91338346，均 falsified）
 
 | 实验 | 任务号 | 账号 | 单变量 | 产物 | 完成后 |
 |---|---|---|---|---|---|
