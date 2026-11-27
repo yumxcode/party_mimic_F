@@ -89,7 +89,7 @@ if args.onnx:
     sess = ort.InferenceSession(args.onnx, providers=["CPUExecutionProvider"])
     hs = np.stack(rec["hist"]).astype(np.float32)
     fs = np.array(rec["f"][: len(hs)], np.float32).reshape(-1, 1)
-    acts = sess.run(None, {"obs_history": hs, "time_step": fs})[0]
+    acts = np.stack([sess.run(None, {"obs_history": hs[i:i + 1], "time_step": fs[i:i + 1]})[0][0] for i in range(len(hs))])
     ta = np.stack(rec["action"][: len(hs)]).numpy()
     diff = np.abs(acts - ta)
     res["onnx_vs_torch_max_abs"] = float(diff.max())

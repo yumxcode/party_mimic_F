@@ -109,7 +109,7 @@ def _main(args, summary: dict) -> None:
         src = pm / rel_dir / f"{clip}.npz"
         dst = out_dir / f"{args.tag}_{clip}.onnx"
         boot.run(["uv", "run", "--no-sync", "python", "tools/export_onnx.py", "--robot", "f1", "--ckpt", str(ckpt),
-                  "--motion", str(src), "--out", str(dst)], cwd=pm, tail=4)
+                  "--motion", str(src), "--out", str(dst)], cwd=pm, tail=14)
         onnx[clip] = dst
 
     # 3. native replay per clip
@@ -121,7 +121,7 @@ def _main(args, summary: dict) -> None:
         rec = pm / "logs" / f"native_{clip}.npz"
         p = boot.run(["uv", "run", "--no-sync", "python", "tools/f1_native_replay.py", "--robot", "f1",
                       "--motion", str(pm / rel_dir / f"{clip}.npz"), "--ckpt", str(ckpt), "--out", str(rec),
-                      "--onnx", str(onnx[clip])], cwd=pm, tail=8)
+                      "--onnx", str(onnx[clip])], cwd=pm, tail=8, check=False)
         for line in (p.stdout or "").splitlines():
             if line.startswith("{"):
                 try:
