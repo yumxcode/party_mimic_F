@@ -1,0 +1,38 @@
+{
+ "norm_return": 0.9129849076271057,
+ "norm_return_framew": 0.9159101843833923,
+ "n_failed": 0,
+ "fail_rate": 0.0,
+ "failed": [],
+ "per_clip": {
+  "dance1_subject3_255_706": 0.9409,
+  "dance1_subject3_3465_3555": 0.9122,
+  "dance1_subject3_720_810": 0.9022,
+  "dance2_subject1_352_795": 0.9144,
+  "dance2_subject3_1050_1200": 0.9847,
+  "dance2_subject3_2325_2475": 0.8325,
+  "dance2_subject3_3225_3375": 0.9548,
+  "dance2_subject3_4875_5025": 0.929,
+  "dance2_subject3_525_675": 0.9848,
+  "dance2_subject3_5400_5550": 0.8379,
+  "dance2_subject3_5550_5700": 0.8028,
+  "dance2_subject4_2745_2835": 0.9213,
+  "dance2_subject4_2835_2925": 0.9513
+ },
+ "per_clip_fail_rate": {},
+ "per_clip_progress": {
+  "dance1_subject3_255_706": 1.0,
+  "dance1_subject3_3465_3555": 1.0,
+  "dance1_subject3_720_810": 1.0,
+  "dance2_subject1_352_795": 1.0,
+  "dance2_subject3_1050_1200": 1.0,
+  "dance2_subject3_2325_2475": 1.0,
+  "dance2_subject3_3225_3375": 1.0,
+  "dance2_subject3_4875_5025": 1.0,
+  "dance2_subject3_525_675": 1.0,
+  "dance2_subject3_5400_5550": 1.0,
+  "dance2_subject3_5550_5700": 1.0,
+  "dance2_subject4_2745_2835": 1.0,
+  "dance2_subject4_2835_2925": 1.0
+ }
+}

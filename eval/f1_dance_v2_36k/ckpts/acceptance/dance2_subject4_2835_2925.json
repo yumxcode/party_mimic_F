@@ -1,0 +1,18 @@
+{
+ "policy": "f1_dance_v2_36k_it026000_dance2_subject4_2835_2925.onnx",
+ "oracle": false,
+ "kinematic": false,
+ "motion": "dance2_subject4_2835_2925",
+ "frames_played": 149,
+ "frames_total": 149,
+ "success": true,
+ "fell_at": null,
+ "joint_err_rad": 0.03262253292498117,
+ "body_err_local_m": 0.007862375380339372,
+ "body_err_m": 0.013367269880982293,
+ "root_err_m": 0.009656701569194926,
+ "min_base_z": 0.5641935398940444,
+ "max_tilt_rad": 0.2619756583809933,
+ "first_obs_absmax": 1.940000057220459,
+ "first_action_absmax": 3.5533714294433594
+}

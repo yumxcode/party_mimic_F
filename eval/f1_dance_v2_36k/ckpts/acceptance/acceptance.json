@@ -1,0 +1,167 @@
+{
+ "tag": "f1_dance_v2_36k_it026000",
+ "onnx_dir": "eval/f1_dance_v2_36k/ckpts",
+ "stance_min_frames": 8,
+ "thresholds": {
+  "A2_trained_mm": 50.0,
+  "A2_heldout_mm": 80.0,
+  "A3_rad": 0.2,
+  "A4_pct": 90.0,
+  "A5_pct": 3.0
+ },
+ "clips": [
+  {
+   "clip": "dance1_subject3_255_706",
+   "kind": "trained",
+   "frames_played": 750,
+   "frames_total": 750,
+   "A1_fall": false,
+   "fell_at": null,
+   "min_base_z": 0.5385123328780477,
+   "max_tilt_rad": 0.5397806784970349,
+   "A2_local_mm": 8.394199034094475,
+   "A2_limit_mm": 50.0,
+   "A3_joint_rad": 0.03085694490715419,
+   "A3_limit": 0.2,
+   "A4_flat_l": 96.8,
+   "A4_flat_r": 85.6,
+   "A4_limit": 90.0,
+   "A4_stance_frames": [
+    750,
+    750
+   ],
+   "A4_valid": true,
+   "A5_adduct_pct": 0.0,
+   "A5_limit": 3.0,
+   "A4_sensitivity_smf5": [
+    96.8,
+    85.6
+   ],
+   "world_body_err_m": 0.019790826394098026,
+   "root_err_m": 0.017817577677834588,
+   "checks": {
+    "A1_no_fall": true,
+    "A2_local_body_err": true,
+    "A3_joint_err": true,
+    "A4_foot_flat": false,
+    "A5_hiproll_adduct": true
+   },
+   "pass": false
+  },
+  {
+   "clip": "dance2_subject1_352_795",
+   "kind": "trained",
+   "frames_played": 737,
+   "frames_total": 737,
+   "A1_fall": false,
+   "fell_at": null,
+   "min_base_z": 0.5590793642578651,
+   "max_tilt_rad": 0.4675555042705477,
+   "A2_local_mm": 9.141743912564332,
+   "A2_limit_mm": 50.0,
+   "A3_joint_rad": 0.034639542485509926,
+   "A3_limit": 0.2,
+   "A4_flat_l": 92.73972602739727,
+   "A4_flat_r": 94.12568306010928,
+   "A4_limit": 90.0,
+   "A4_stance_frames": [
+    730,
+    732
+   ],
+   "A4_valid": true,
+   "A5_adduct_pct": 0.27137042062415195,
+   "A5_limit": 3.0,
+   "A4_sensitivity_smf5": [
+    92.73972602739727,
+    94.12568306010928
+   ],
+   "world_body_err_m": 0.023969492145546965,
+   "root_err_m": 0.022369650423500302,
+   "checks": {
+    "A1_no_fall": true,
+    "A2_local_body_err": true,
+    "A3_joint_err": true,
+    "A4_foot_flat": true,
+    "A5_hiproll_adduct": true
+   },
+   "pass": true
+  },
+  {
+   "clip": "dance2_subject4_2835_2925",
+   "kind": "trained",
+   "frames_played": 149,
+   "frames_total": 149,
+   "A1_fall": false,
+   "fell_at": null,
+   "min_base_z": 0.5641935398940444,
+   "max_tilt_rad": 0.2619756583809933,
+   "A2_local_mm": 7.8623753803393726,
+   "A2_limit_mm": 50.0,
+   "A3_joint_rad": 0.03262253292498117,
+   "A3_limit": 0.2,
+   "A4_flat_l": 100.0,
+   "A4_flat_r": 100.0,
+   "A4_limit": 90.0,
+   "A4_stance_frames": [
+    149,
+    149
+   ],
+   "A4_valid": true,
+   "A5_adduct_pct": 0.0,
+   "A5_limit": 3.0,
+   "A4_sensitivity_smf5": [
+    100.0,
+    100.0
+   ],
+   "world_body_err_m": 0.013367269880982293,
+   "root_err_m": 0.009656701569194926,
+   "checks": {
+    "A1_no_fall": true,
+    "A2_local_body_err": true,
+    "A3_joint_err": true,
+    "A4_foot_flat": true,
+    "A5_hiproll_adduct": true
+   },
+   "pass": true
+  },
+  {
+   "clip": "dance2_subject3_300_450",
+   "kind": "held-out",
+   "frames_played": 249,
+   "frames_total": 249,
+   "A1_fall": false,
+   "fell_at": null,
+   "min_base_z": 0.5756162758887942,
+   "max_tilt_rad": 0.682966109079933,
+   "A2_local_mm": 45.813562738336465,
+   "A2_limit_mm": 80.0,
+   "A3_joint_rad": 0.0633239908916661,
+   "A3_limit": 0.2,
+   "A4_flat_l": 94.77911646586345,
+   "A4_flat_r": 94.77911646586345,
+   "A4_limit": 90.0,
+   "A4_stance_frames": [
+    249,
+    249
+   ],
+   "A4_valid": true,
+   "A5_adduct_pct": 0.0,
+   "A5_limit": 3.0,
+   "A4_sensitivity_smf5": [
+    94.77911646586345,
+    94.77911646586345
+   ],
+   "world_body_err_m": 0.16274898555727085,
+   "root_err_m": 0.1542669790398782,
+   "checks": {
+    "A1_no_fall": true,
+    "A2_local_body_err": true,
+    "A3_joint_err": true,
+    "A4_foot_flat": true,
+    "A5_hiproll_adduct": true
+   },
+   "pass": true
+  }
+ ],
+ "pass": false
+}
