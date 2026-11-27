@@ -74,10 +74,15 @@ def find_repo() -> Path:
 HERE = find_repo()
 
 
-def run(cmd, cwd=None, env=None, check=True, tail=None):
+def run(cmd, cwd=None, env=None, check=True, tail=None, timeout=None):
     blog(f"$ {' '.join(map(str, cmd))}  (cwd={cwd})")
     t0 = time.time()
-    p = subprocess.run(cmd, cwd=cwd, env=env, text=True, capture_output=True)
+    try:
+        p = subprocess.run(cmd, cwd=cwd, env=env, text=True, capture_output=True, timeout=timeout)
+    except subprocess.TimeoutExpired as e:
+        class _TimedOut:
+            returncode, stdout, stderr = 124, (e.stdout or "") if isinstance(e.stdout, str) else "", f"timed out after {timeout} s"
+        p = _TimedOut()
     out = (p.stdout or "") + (p.stderr or "")
     shown = "\n".join(out.splitlines()[-tail:]) if tail else out
     print(shown, flush=True)
@@ -240,9 +245,18 @@ def _main(args, summary: dict) -> None:
     run([sys.executable, str(HERE / "tools/patch_partymimic.py"), str(pm)], cwd=WS)
     run(["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv"], cwd=WS, check=False, tail=5)
 
-    # 4. environment
+    # 4. environment (uv's downloads stalled for >70 min on the gradmotion hosts on 2026-11-27 evening:
+    #    bound each attempt and retry)
     if not args.skip_sync:
-        run(["uv", "sync", "--frozen"], cwd=pm, tail=40)
+        uv_env = dict(os.environ, UV_HTTP_TIMEOUT="300")
+        for attempt in range(1, 4):
+            p = run(["uv", "sync", "--frozen"], cwd=pm, env=uv_env, tail=40, check=False, timeout=2400)
+            if p.returncode == 0:
+                break
+            blog(f"uv sync attempt {attempt}/3 failed (rc={p.returncode}); retrying in 60 s")
+            time.sleep(60)
+        else:
+            raise SystemExit("uv sync failed 3 times")
     disable_mjlab_cuda_graph(pm)
     disable_mjwarp_conditional_graph(pm)
 

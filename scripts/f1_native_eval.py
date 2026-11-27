@@ -70,7 +70,16 @@ def _main(args, summary: dict) -> None:
     boot.run([sys.executable, str(HERE / "tools/patch_partymimic.py"), str(pm)], cwd=WS)
     boot.run(["nvidia-smi", "--query-gpu=name,driver_version,memory.total", "--format=csv"], cwd=WS, check=False, tail=5)
     if not args.skip_sync:
-        boot.run(["uv", "sync", "--frozen"], cwd=pm, tail=20)
+        import os
+        uv_env = dict(os.environ, UV_HTTP_TIMEOUT="300")
+        for attempt in range(1, 4):
+            p = boot.run(["uv", "sync", "--frozen"], cwd=pm, env=uv_env, tail=20, check=False, timeout=2400)
+            if p.returncode == 0:
+                break
+            boot.blog(f"uv sync attempt {attempt}/3 failed (rc={p.returncode}); retrying in 60 s")
+            time.sleep(60)
+        else:
+            raise SystemExit("uv sync failed 3 times")
     boot.disable_mjlab_cuda_graph(pm)
     boot.disable_mjwarp_conditional_graph(pm)
     boot.run(["uv", "pip", "install", "--python", str(pm / ".venv/bin/python"), "onnxruntime"], cwd=pm, tail=5)
