@@ -1,0 +1,148 @@
+{
+  "frames": 750,
+  "fps": 50.0,
+  "ground": {
+    "min_foot_z_m": -0.006985442667982273,
+    "frame": 2,
+    "pass": true,
+    "threshold_m": -0.015
+  },
+  "self_penetration": {
+    "min_pair_distance_m": 0.06475870307948627,
+    "pair": [
+      "left_wrist_roll_link",
+      "torso_1"
+    ],
+    "frame": 372,
+    "pass": true,
+    "threshold_m": 0.005
+  },
+  "joint_limits": {
+    "violations": 4,
+    "examples": [
+      [
+        686,
+        "lumbar_pitch_joint",
+        0.4502322638646589,
+        -0.15,
+        0.45
+      ],
+      [
+        688,
+        "left_wrist_roll_joint",
+        0.40540093122040555,
+        -0.4,
+        0.4
+      ],
+      [
+        689,
+        "left_wrist_roll_joint",
+        0.4092427857426938,
+        -0.4,
+        0.4
+      ],
+      [
+        690,
+        "left_wrist_roll_joint",
+        0.40694416272505246,
+        -0.4,
+        0.4
+      ]
+    ],
+    "pass": false
+  },
+  "joint_velocities": {
+    "exceeding": [],
+    "margin": 1.5,
+    "pass": true
+  },
+  "root_height": {
+    "min_m": 0.5302448114316272,
+    "max_m": 0.6030044468461623,
+    "band": [
+      0.35,
+      1.0
+    ],
+    "pass": true
+  },
+  "continuity": {
+    "pass": true,
+    "quat_continuous": true,
+    "finite": true
+  },
+  "foot_flatness": {
+    "gating": true,
+    "thresholds": {
+      "pitch_deg": 10.0,
+      "roll_deg": 8.0,
+      "flat_min_pct": 90.0,
+      "contact_h": 0.03
+    },
+    "left": {
+      "phase": "stance",
+      "frames": 750,
+      "flat_pct": 95.73333333333333,
+      "pitch_p95_deg": 9.870784656452047,
+      "roll_p95_deg": 3.4372415943653087,
+      "pass": "True"
+    },
+    "right": {
+      "phase": "stance",
+      "frames": 750,
+      "flat_pct": 81.33333333333333,
+      "pitch_p95_deg": 13.293413548113403,
+      "roll_p95_deg": 6.733951917617468,
+      "pass": false
+    },
+    "pass": false
+  },
+  "arm_quality": {
+    "gating": true,
+    "any_sat_pct": 17.466666666666665,
+    "max_sat_pct": 10.0,
+    "worst_joints": [
+      {
+        "joint": "left_wrist_roll_joint",
+        "sat_pct": 10.4
+      },
+      {
+        "joint": "right_wrist_roll_joint",
+        "sat_pct": 6.666666666666667
+      },
+      {
+        "joint": "left_wrist_pitch_joint",
+        "sat_pct": 5.6000000000000005
+      }
+    ],
+    "wrist_rom_pct": {
+      "left_wrist_pitch_joint": 57.30320917629875,
+      "left_wrist_roll_joint": 62.021605150039214,
+      "right_wrist_pitch_joint": 78.45944890470527,
+      "right_wrist_roll_joint": 85.63939682218587
+    },
+    "pass": false
+  },
+  "stance_openness": {
+    "gating": true,
+    "double_support_frames": 750,
+    "ds_gap_over_hipw": {
+      "mean": 1.2004716948271226,
+      "p5": 1.0994996320690142,
+      "min_mean": 1.15,
+      "min_p5": 0.7
+    },
+    "both_hiproll_adducted": {
+      "pct": 0.0,
+      "threshold_deg": 3.0,
+      "max_pct": 3.0,
+      "l_hiproll_mean_deg": 9.068469325855983,
+      "r_hiproll_mean_deg": -10.641520189961776
+    },
+    "pass": true
+  },
+  "jerk_advisory": {
+    "max_ang_acc_rad_s2": 221.7098815327395,
+    "gating": false
+  },
+  "overall_pass": false
+}
