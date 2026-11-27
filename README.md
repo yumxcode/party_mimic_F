@@ -48,14 +48,26 @@ if the collection-graph capture still fails), trains, exports one ONNX per clip 
 (every 2000 iterations / 20 min), ONNX files and `train_log.csv` to `/workspace/output` as `.pt`.
 Progress and the gradmotion task ids are kept in `PROGRESS.md`.
 
-### 3. MuJoCo sim2sim
+### 3. MuJoCo sim2sim and the pre-registered acceptance (A1-A5)
 ```bash
-python tools/f1_sim2sim.py --onnx eval/f1_dance_v1_dance1_subject3_255_706.onnx \
-    --mjcf assets/f1/f1_party.xml --out eval/rollout.npz --json eval/rollout.json
-python tools/f1_render_compare.py --rollout eval/rollout.npz --out videos/dance_compare.mp4
+# downloaded ONNX files renamed to <tag>_<clip>.onnx in one directory (see PROGRESS.md)
+python tools/f1_acceptance.py --onnx_dir eval/f1_dance_v1 --tag f1_dance_v1 --out eval/f1_dance_v1/acceptance
+python tools/f1_sim2sim.py --onnx eval/f1_dance_v1/f1_dance_v1_dance1_subject3_255_706.onnx --out eval/x.npz --json eval/x.json
+python tools/f1_render_compare.py --rollout eval/f1_dance_v1/acceptance/*.npz --out videos/f1_dance_v1_compare.mp4 --stride 2 --quality 7
 ```
+`tools/f1_sim2sim.py` rebuilds the training physics (mjlab actuators with the F1 armature/effort limits,
+ground plane, MujocoCfg) and the observation of `partymimic.mdp.MDP.obs`; a replay in PartyMimic's own
+simulator (`scripts/f1_native_eval.py`, `tools/f1_native_compare.py`) agrees with it to <0.003 rad.
 
-## Status
+## Status (2026-11-28)
 
-See `docs/` for the data requirements, the nine retargeting gates with per-clip results, the
-pre-registered dance acceptance plan, and the final report.
+* Training runs on gradmotion (F1 29DOF, project kp/kd, 13-clip library): `f1_dance_v1` (12k it) and
+  `f1_dance_v2_36k` (36k it; diverged after ~33k, its 26k checkpoint equals v1). PartyMimic's own
+  evaluation: normalized return 0.916 on the 13 clips, no failures.
+* **Dance acceptance (docs/acceptance_plan.md, A1-A5 on CPU MuJoCo sim2sim): 3 of 4 clips pass.**
+  `dance1_subject3_255_706` fails A4 (right-foot flatness 86.4 % < 90 %; the reference itself is at
+  93.7 %). All clips stay up (A1), local body error 7.4-9.4 mm trained / 44.5 mm held-out (A2), joint
+  error 0.031-0.065 rad (A3), no hip-roll adduction (A5). Thresholds were not changed; the gap is the
+  policy's foot-pitch tracking precision, not the sim2sim tool (native replay gives 86.1 %).
+* Details, per-gate numbers, the training-task ids and all disclosures: `docs/sim2sim_report.md`.
+  Comparison video: `videos/f1_dance_v1_compare.mp4`. Resumption notes: `PROGRESS.md`.
