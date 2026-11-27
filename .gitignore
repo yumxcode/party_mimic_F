@@ -8,12 +8,12 @@ __pycache__/
 *.pyc
 
 # upstream PartyMimic download + local copies of the vendor asset (738 MB, not for git)
-pm.tgz
-pm_src/
-pm_tree.json
-PartyMimic/
-PartyMimic_README.md
-F1_29DOF/
+/pm.tgz
+/pm_src/
+/pm_tree.json
+/PartyMimic/
+/PartyMimic_README.md
+/F1_29DOF/
 data/umr_f1/
 gm_images.json
 
