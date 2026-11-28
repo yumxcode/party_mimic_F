@@ -1,0 +1,111 @@
+{
+  "frames": 149,
+  "fps": 50.0,
+  "ground": {
+    "min_foot_z_m": -0.005290221431528448,
+    "frame": 3,
+    "pass": true,
+    "threshold_m": -0.015
+  },
+  "self_penetration": {
+    "min_pair_distance_m": 0.2119599797028197,
+    "pair": [
+      "right_wrist_roll_link",
+      "torso_1"
+    ],
+    "frame": 148,
+    "pass": true,
+    "threshold_m": 0.005
+  },
+  "joint_limits": {
+    "violations": 0,
+    "examples": [],
+    "pass": true
+  },
+  "joint_velocities": {
+    "exceeding": [],
+    "margin": 1.5,
+    "pass": true
+  },
+  "root_height": {
+    "min_m": 0.56303156990086,
+    "max_m": 0.5796142815658473,
+    "band": [
+      0.35,
+      1.0
+    ],
+    "pass": true
+  },
+  "continuity": {
+    "pass": true,
+    "quat_continuous": true,
+    "finite": true
+  },
+  "foot_flatness": {
+    "gating": true,
+    "thresholds": {
+      "pitch_deg": 10.0,
+      "roll_deg": 8.0,
+      "flat_min_pct": 90.0,
+      "contact_h": 0.03
+    },
+    "left": {
+      "phase": "stance",
+      "frames": 149,
+      "flat_pct": 100.0,
+      "pitch_p95_deg": 0.4352064805351832,
+      "roll_p95_deg": 2.1769166396150132,
+      "pass": "True"
+    },
+    "right": {
+      "phase": "stance",
+      "frames": 149,
+      "flat_pct": 100.0,
+      "pitch_p95_deg": 0.42929580333746686,
+      "roll_p95_deg": 2.3298809173212116,
+      "pass": "True"
+    },
+    "pass": "True"
+  },
+  "arm_quality": {
+    "gating": true,
+    "any_sat_pct": 1.342281879194631,
+    "max_sat_pct": 10.0,
+    "worst_joints": [
+      {
+        "joint": "right_wrist_pitch_joint",
+        "sat_pct": 1.342281879194631
+      }
+    ],
+    "wrist_rom_pct": {
+      "left_wrist_pitch_joint": 9.127454273219593,
+      "left_wrist_roll_joint": 22.008294276648382,
+      "right_wrist_pitch_joint": 42.272239194989595,
+      "right_wrist_roll_joint": 12.465018926189469
+    },
+    "pass": true
+  },
+  "stance_openness": {
+    "gating": true,
+    "double_support_frames": 149,
+    "ds_gap_over_hipw": {
+      "mean": 1.2629449790211975,
+      "p5": 1.2135882235799862,
+      "min_mean": 1.15,
+      "min_p5": 0.7
+    },
+    "both_hiproll_adducted": {
+      "pct": 0.0,
+      "threshold_deg": 3.0,
+      "max_pct": 3.0,
+      "l_hiproll_mean_deg": 4.71989400567203,
+      "r_hiproll_mean_deg": -9.02543500544269
+    },
+    "pass": true
+  },
+  "jerk_advisory": {
+    "max_ang_acc_rad_s2": 178.85340603290055,
+    "gating": false
+  },
+  "overall_pass": true
+}
