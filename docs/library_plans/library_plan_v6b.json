@@ -1,0 +1,396 @@
+{
+ "clips": [
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 255,
+   "end": 706,
+   "name": "dance1_subject3_255_706",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 300,
+   "end": 600,
+   "name": "dance1_subject3_300_600",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 375,
+   "end": 525,
+   "name": "dance1_subject3_375_525",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 405,
+   "end": 495,
+   "name": "dance1_subject3_405_495",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 450,
+   "end": 540,
+   "name": "dance1_subject3_450_540",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 450,
+   "end": 600,
+   "name": "dance1_subject3_450_600",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 525,
+   "end": 675,
+   "name": "dance1_subject3_525_675",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 540,
+   "end": 630,
+   "name": "dance1_subject3_540_630",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 585,
+   "end": 675,
+   "name": "dance1_subject3_585_675",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance1_subject3_f1.csv",
+   "start": 630,
+   "end": 720,
+   "name": "dance1_subject3_630_720",
+   "source": "dance1_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+   "start": 300,
+   "end": 600,
+   "name": "dance2_subject1_300_600",
+   "source": "dance2_subject1",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+   "start": 352,
+   "end": 795,
+   "name": "dance2_subject1_352_795",
+   "source": "dance2_subject1",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+   "start": 450,
+   "end": 540,
+   "name": "dance2_subject1_450_540",
+   "source": "dance2_subject1",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+   "start": 450,
+   "end": 600,
+   "name": "dance2_subject1_450_600",
+   "source": "dance2_subject1",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+   "start": 495,
+   "end": 585,
+   "name": "dance2_subject1_495_585",
+   "source": "dance2_subject1",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+   "start": 525,
+   "end": 675,
+   "name": "dance2_subject1_525_675",
+   "source": "dance2_subject1",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+   "start": 540,
+   "end": 630,
+   "name": "dance2_subject1_540_630",
+   "source": "dance2_subject1",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject1_f1.csv",
+   "start": 585,
+   "end": 675,
+   "name": "dance2_subject1_585_675",
+   "source": "dance2_subject1",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 450,
+   "end": 540,
+   "name": "dance2_subject3_450_540",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 450,
+   "end": 600,
+   "name": "dance2_subject3_450_600",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 450,
+   "end": 750,
+   "name": "dance2_subject3_450_750",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 525,
+   "end": 675,
+   "name": "dance2_subject3_525_675",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 540,
+   "end": 630,
+   "name": "dance2_subject3_540_630",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 900,
+   "end": 1050,
+   "name": "dance2_subject3_900_1050",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 900,
+   "end": 1200,
+   "name": "dance2_subject3_900_1200",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 945,
+   "end": 1035,
+   "name": "dance2_subject3_945_1035",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 975,
+   "end": 1125,
+   "name": "dance2_subject3_975_1125",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 1035,
+   "end": 1125,
+   "name": "dance2_subject3_1035_1125",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 1050,
+   "end": 1200,
+   "name": "dance2_subject3_1050_1200",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 1050,
+   "end": 1350,
+   "name": "dance2_subject3_1050_1350",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 1080,
+   "end": 1170,
+   "name": "dance2_subject3_1080_1170",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 1305,
+   "end": 1395,
+   "name": "dance2_subject3_1305_1395",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 2610,
+   "end": 2700,
+   "name": "dance2_subject3_2610_2700",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 2655,
+   "end": 2745,
+   "name": "dance2_subject3_2655_2745",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 5400,
+   "end": 5490,
+   "name": "dance2_subject3_5400_5490",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 5400,
+   "end": 5550,
+   "name": "dance2_subject3_5400_5550",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 5445,
+   "end": 5535,
+   "name": "dance2_subject3_5445_5535",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 5475,
+   "end": 5625,
+   "name": "dance2_subject3_5475_5625",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 5490,
+   "end": 5580,
+   "name": "dance2_subject3_5490_5580",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 5535,
+   "end": 5625,
+   "name": "dance2_subject3_5535_5625",
+   "source": "dance2_subject3",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+   "start": 2835,
+   "end": 2925,
+   "name": "dance2_subject4_2835_2925",
+   "source": "dance2_subject4",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+   "start": 3450,
+   "end": 3600,
+   "name": "dance2_subject4_3450_3600",
+   "source": "dance2_subject4",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+   "start": 3510,
+   "end": 3600,
+   "name": "dance2_subject4_3510_3600",
+   "source": "dance2_subject4",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+   "start": 3645,
+   "end": 3735,
+   "name": "dance2_subject4_3645_3735",
+   "source": "dance2_subject4",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+   "start": 4770,
+   "end": 4860,
+   "name": "dance2_subject4_4770_4860",
+   "source": "dance2_subject4",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+   "start": 5355,
+   "end": 5445,
+   "name": "dance2_subject4_5355_5445",
+   "source": "dance2_subject4",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+   "start": 6300,
+   "end": 6450,
+   "name": "dance2_subject4_6300_6450",
+   "source": "dance2_subject4",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject4_f1.csv",
+   "start": 6345,
+   "end": 6435,
+   "name": "dance2_subject4_6345_6435",
+   "source": "dance2_subject4",
+   "recipe": "v6"
+  },
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject5_f1.csv",
+   "start": 6660,
+   "end": 6750,
+   "name": "dance2_subject5_6660_6750",
+   "source": "dance2_subject5",
+   "recipe": "v6"
+  }
+ ]
+}

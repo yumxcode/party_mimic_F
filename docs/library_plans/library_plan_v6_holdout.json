@@ -1,0 +1,12 @@
+{
+ "clips": [
+  {
+   "csv": "work/retarget_csv_flat/dance2_subject3_f1.csv",
+   "start": 300,
+   "end": 450,
+   "name": "dance2_subject3_300_450",
+   "source": "dance2_subject3",
+   "heldout": true
+  }
+ ]
+}
