@@ -24,7 +24,9 @@
 | 训练库 | 完成 | `data/motions/f1/`：14 段 / 85.3 s 全 Tier A（3 个验收训练段 + 11 个新窗口）；`data/testsets/f1_holdout/` 同一 held-out 窗口；v5 库归档于 `*_v5recipe/`；过门表 `docs/retarget_gate_table.md` |
 | 重新预注册 | 完成 | `docs/acceptance_plan.md` 修订 v2：同 4 个窗口、同阈值、同脚本；v1 结果保留在 §5 |
 | 重训 | **进行中** | TASK_20261128_101（seed 0，`f1_dance_v3flat_s0`）、TASK_20261128_102（seed 1，`f1_dance_v3flat_s1`），账号 85，12k it/4096 envs |
-| 重判 | 待 | `./work/gm_fetch_models.sh 85 TASK_20261128_10X eval/<tag> <clip>.onnx` ×4 + train_log；改名；`tools/f1_acceptance.py --tag <tag>`；更新报告 §11、README、视频 |
+| 重判（14 段库） | 完成：3/4 | 两个 seed 的 3 个训练段全过（A4 98–100%，原未过片段已过）；**held-out 段 A4 未过**（seed 0 71.9/81.0，seed 1 95.6/88.8）：未见动作上脚掌 pitch/roll 偏 10–14°，属 85 s 库的泛化差距。`eval/f1_dance_v3flat_s0|s1/` |
+| 扩库（契约第 4 条） | 完成 | v6 扫窗的全部 49 个九门窗口入库（232 s，允许重叠）：`data/motions/f1/`（14 段版归档 `f1_v6_14clips/`）；验收参考不变（npz 逐字节相同）；lab_notebook exp_c0d36761 |
+| 重训 v6b | **进行中** | TASK_20261128_111（账号 85，seed 0，`f1_dance_v6b_s0`）、TASK_20261128_112（账号 82，seed 1，`f1_dance_v6b_s1`），08:50 提交；完成后同上流程重判 |
 
 ## A4 攻关实验（v5 参考；**已完成**，2026-11-28 05:29–06:28 运行；lab_notebook exp_f5125d37 / exp_a557f372 / exp_91338346，均 falsified）
 
