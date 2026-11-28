@@ -66,15 +66,16 @@ simulator (`scripts/f1_native_eval.py`, `tools/f1_native_compare.py`) agrees wit
 
 * **Final: the pre-registered dance acceptance (docs/acceptance_plan.md, A1-A5 on CPU MuJoCo sim2sim) PASSES
   4/4 clips for `f1_dance_v6b_s0`** (gradmotion TASK_20261128_111: 12k it / 4096 envs, 49-clip / 232 s
-  v6 library, seed 0). No fall in any clip (A1); local body error 9.0 / 8.9 / 8.3 mm trained, 37.2 mm
+  v6 library, seed 0; replicated from scratch with seed 2, TASK_20261128_134, also 4/4; the seed-0
+  checkpoint gives the same gates in PartyMimic's own simulator, mjlab, joint diff < 0.002 rad). No fall in any clip (A1); local body error 9.0 / 8.9 / 8.3 mm trained, 37.2 mm
   held-out (limits 50 / 80); joint error 0.033-0.053 rad (limit 0.20); foot flatness 97.7/97.3,
   98.3/98.9, 100/100, held-out 100/100 % (limit 90); hip-roll adduction <= 0.54 % (limit 3).
   Thresholds were never changed. Video: `videos/f1_dance_v6b_compare.mp4`. Report: `docs/sim2sim_report.md` §11.
 * Read with it: (1) the references of the 4 acceptance clips are the **v6 re-retargeted** motions
   (stance soles flattened; user-authorized option b after the v5-reference result below); under the
-  original v5 references the same gates still give 3/4. (2) The identical configuration with **seed 1
-  fails** (falls at frame 145/149 of the 3 s clip, A1) although its other 3 clips pass; the pass is a
-  single-seed result and the delivered policy is seed 0. (3) With the v6 references but only the 14-clip /
+  original v5 references the same gates still give 3/4. (2) The identical configuration passes on
+  **2 of 3 seeds**: seed 1 fails (falls at frame 145/149 of the 3 s clip, A1) although its other 3
+  clips pass; the delivered policy is seed 0. (3) With the v6 references but only the 14-clip /
   85 s library the held-out clip failed A4 (71.9/81.0 %); enlarging the library to all 49 nine-gate
   windows closed it.
 * v5-reference history (all kept in the report): `f1_dance_v1` (12k it) and `f1_dance_v2_36k` (diverged

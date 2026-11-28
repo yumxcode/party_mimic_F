@@ -1,6 +1,6 @@
 # PROGRESS — F1 29DOF PartyMimic 跳舞（A14 续跑）
 
-> 可随时中断续接的进度文件。时间均为 CST。**最终状态（2026-11-28 10:10）：预注册舞蹈验收门 A1–A5 通过——`f1_dance_v6b_s0`（TASK_20261128_111，v6 重新预注册参考 + 49 段过门库，seed 0）4/4 段通过；同配置 seed 1 跌倒未过（已披露）；v5 参考下的历史结果（3/4）全部保留。在跑：seed 2 复跑（TASK_20261128_134）与原生 mjlab 跨栈对照（TASK_20261128_135），返回后补入报告 §11.4。**
+> 可随时中断续接的进度文件。时间均为 CST。**最终状态（2026-11-28 11:05）：预注册舞蹈验收门 A1–A5 通过——`f1_dance_v6b_s0`（TASK_20261128_111，v6 重新预注册参考 + 49 段过门库，seed 0）4/4 段通过；seed 2 从零复跑同样 4/4（TASK_20261128_134）；同配置 seed 1 跌倒未过（已披露）；交付策略在 mjlab 原生回放中结果一致（TASK_20261128_135）；v5 参考下的历史结果（3/4）全部保留。无在跑任务。**
 
 ## 最终状态
 
@@ -30,7 +30,8 @@
 | 扩库（契约第 4 条） | 完成 | v6 扫窗的全部 49 个九门窗口入库（232 s，允许重叠）：`data/motions/f1/`（14 段版归档 `f1_v6_14clips/`）；验收参考不变（npz 逐字节相同）；lab_notebook exp_c0d36761 |
 | 重训 v6b（49 段库） | 完成 | TASK_20261128_111（账号 85，seed 0，`f1_dance_v6b_s0`，0.579 h）、TASK_20261128_112（账号 82，seed 1，`f1_dance_v6b_s1`，0.579 h） |
 | **重判 v6b** | **seed 0：通过 4/4；seed 1：未通过（A1）** | seed 0：A2 9.0/8.9/8.3/37.2 mm，A3 0.033–0.053，A4 97.7/97.3、98.3/98.9、100/100、100/100，A5 ≤0.54%，不倒。seed 1：`dance2_subject4_2835_2925` 在 145/149 帧跌倒（其余 3 段过，held-out A4 94.4/100）。`eval/f1_dance_v6b_s0|s1/` |
-| 复现/对照（在跑） | 进行中 | seed 2 复跑 TASK_20261128_134（账号 81，`f1_dance_v6b_s2`）；原生 mjlab 跨栈对照 TASK_20261128_135（账号 84，`f1_dance_v6b_s0` 的 last.pt）。返回后：下载 4 段 ONNX + train_log → `tools/f1_acceptance.py`；原生记录 → `tools/f1_native_compare.py` → 报告 §11.4 |
+| 复现（seed 2） | **通过 4/4** | TASK_20261128_134（账号 81，`f1_dance_v6b_s2`，0.585 h）：A2 10.1/9.1/8.1/38.7 mm，A3 0.033–0.058，A4 98.5/95.5、97.9/98.5、100/100、held-out 95.2/94.8，A5 0，不倒。配置 3 个 seed 中 2 个通过。`eval/f1_dance_v6b_s2/` |
+| 原生 mjlab 跨栈对照 | 一致 | TASK_20261128_135（账号 84，`f1_dance_v6b_s0_last.pt`）：A4 97.7/97.6、98.2/98.6、100/100、100/100；A2 8.9/9.2/8.5/37.0 mm；与 CPU MuJoCo 逐帧关节差 <0.002 rad。`eval/native_v6b/` |
 
 ## A4 攻关实验（v5 参考；**已完成**，2026-11-28 05:29–06:28 运行；lab_notebook exp_f5125d37 / exp_a557f372 / exp_91338346，均 falsified）
 
@@ -57,14 +58,14 @@
 | TASK_20261128_101/102 | 85 | v3flat：v6 14 段库，seed 0/1 | 完成 08:14，各 3/4（held-out A4 未过） |
 | **TASK_20261128_111** | 85 (PRO_20261127_084) | **v6b：49 段库，seed 0，`f1_dance_v6b_s0` —— 交付策略** | 完成 09:33；**验收 4/4 通过**；`f1_dance_v6b_s0_last.pt`、`f1_dance_v6b_s0_ckpt_*.pt`、50 个 ONNX |
 | TASK_20261128_112 | 82 (PRO_20261128_001) | v6b seed 1，`f1_dance_v6b_s1` | 完成 09:36；验收 3/4（clip 3 跌倒） |
-| TASK_20261128_134 | 81 (PRO_20261128_002) | v6b seed 2 复跑，`f1_dance_v6b_s2` | 10:02 提交 |
-| TASK_20261128_135 | 84 (PRO_20261128_003) | `f1_dance_v6b_s0` last.pt 的原生 mjlab 回放（跨栈对照） | 10:02 提交 |
+| TASK_20261128_134 | 81 (PRO_20261128_002) | v6b seed 2 复跑，`f1_dance_v6b_s2` | 完成 10:54；**验收 4/4 通过** |
+| TASK_20261128_135 | 84 (PRO_20261128_003) | `f1_dance_v6b_s0` last.pt 的原生 mjlab 回放（跨栈对照） | 完成 10:10；与 CPU MuJoCo 一致 |
 
 checkpoint 路径（交付）：`gm task model list --task-id TASK_20261128_111`（`f1_dance_v6b_s0_last.pt`、`f1_dance_v6b_s0_ckpt_002000…012000.pt`、`f1_dance_v6b_s0_f1_dance_v6b_s0_<clip>.onnx.pt`；OSS 直链存 `work/v6b_last_url.txt`）。历史：`gm task model list --task-id TASK_20261127_632`（v1：`f1_dance_v1_ckpt_00xxxx.pt`、`f1_dance_v1_last.pt`、`f1_dance_v1_*_<clip>.onnx.pt`）；`--task-id TASK_20261127_800`（v2：`f1_dance_v2_36k_ckpt_002000…036000.pt`、`f1_dance_v2_36k_last.pt`、ONNX）；`--task-id TASK_20261128_038`（26k 的 4 个验收 ONNX、4 个原生评估 json）。本地下载脚本 `work/gm_fetch_models.sh <账号池id> <task> <dest> [子串]`；账号余额 11-28 10:00 约 85: 5、82: 21、81: 13、84: 15（seed 2 / 原生对照各约 5，已计入）。
 
 ## 下一步（未被要求，未执行）
 
-- seed 1 的跌倒说明 12k it 下末端稳定性有种子方差；若要更稳健的交付可训练 2–3 个 seed 择优（每个约 5 个余额单位、1 h），或按 PartyMimic 自带评估在验收片段上筛选 checkpoint。
+- seed 1 的跌倒说明 12k it 下末端稳定性有种子方差（3 个 seed 中 1 个）；若要更稳健可再训几个 seed 或按 PartyMimic 自带评估在验收片段上筛选 checkpoint（每个约 5 个余额单位、1 h），或按 PartyMimic 自带评估在验收片段上筛选 checkpoint。
 - 232 s 库仍远小于论文 41 h；零样本泛化（held-out 只有 1 段 5 s）未系统评估。
 - 踮脚类动作在 v6 配方下被压平；若要保留踮脚，需要为 A4 定义区分"设计性踮脚"与"脚掌不平贴"的口径（属验收标准变更，需用户决定）。
 
